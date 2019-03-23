@@ -61,6 +61,12 @@
 #define RIGHTCURVE_ENCODER	78.5		// 右輪中心からエンコーダーの中心までの距離
 #define LEFTCURVE_ENCODER	74.5		// 左輪中心からエンコーダーの中心までの距離
 
+#define TARGETDISTANCE		14850	// 的までのパルス
+#define TARGETDISTANCE_E	6187.5	// E的までの距離
+#define TARGETDISTANCE_F	7425		// F的までの距離
+#define TARGETDISTANCE_ABCD	4950	// A,B,C,D的までの距離
+#define DEGTOAD			12.28	// 1°あたりのAD値
+
 // PIDゲイン関連
 //白線トレース
 #define KP			28
@@ -76,6 +82,11 @@
 #define KP3		6
 #define KI3		20
 #define KD3		0
+
+// 槍角度制御
+#define KP4		4
+#define KI4		4
+#define KD4		90
 
 // 緊急停止関連
 #define STOP_SENSOR1		60		// センサ全灯
@@ -94,6 +105,8 @@ extern char	angle_mode;		// サーボPWM変更	0:白線トレース	1:角度制御
 extern char	pushcart_mode;		// 手押しモード可否	0:自動走行	1:手押し
 extern char	msdset;			// MicroSDが初期化されたか	0:初期化失敗	1:初期化成功
 extern char	IMUSet;			// IMUが初期化されたか	0: 初期化失敗	1:初期化成功
+
+extern char	targetmarker;		// 的の番号
 
 
 // パラメータ関連
@@ -146,6 +159,7 @@ extern short		targetSpeed;	// 目標速度
 extern char	kp_buff, ki_buff, kd_buff;
 extern char	kp2_buff, ki2_buff, kd2_buff;
 extern char 	kp3_buff, ki3_buff, kd3_buff;
+extern char 	kp4_buff, ki4_buff, kd4_buff;
 
 // デモ関連
 extern char demo;
@@ -156,6 +170,8 @@ extern short 		SetAngle;		// 目標角度
 extern signed char 	ServoPwm;	// 白線トレースサーボPWM
 extern signed char 	ServoPwm2;	// 角度サーボPWM
 
+extern short 		SetAngle2;		// 目標角度
+extern signed char 	ServoPwm3;	// 角度サーボPWM
 //====================================//
 // プロトタイプ宣言								//
 //====================================//
@@ -181,5 +197,8 @@ void diff ( signed char pwm );
 // サーボ関連
 void servoControl( void );
 void servoControl2( void );
+
+// 的関連
+void targettheta (void);
 
 #endif // LINECHASE_H_

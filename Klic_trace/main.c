@@ -41,7 +41,6 @@ unsigned short	 	cnt_out3;	// コースアウト判定用タイマ3
 unsigned short	 	cnt_out4;	// コースアウト判定用タイマ4
 static char			Timer10;	// 1msカウント用
 
-char	targetmarker = 0;	// 的の番号
 char	BeforeCurve = 1;
 //====================================//
 // プロトタイプ宣言								//
@@ -51,7 +50,7 @@ void init_Parameter ( bool lcd );
 // メインプログラム								//
 //====================================//
 void main(void){
-	short i, j;
+	short i;
 	unsigned int ui;
 	
 	//=================================//
@@ -59,9 +58,9 @@ void main(void){
 	//=================================//
 	inti_lcd();			// LCD初期化
 	
-	motor_f( 0, 0 );		// モーター停止
 	motor_r( 0, 0 );
 	servoPwmOut( 0 );
+	servoPwmOut2( 0 );
 	
 	pushcart_mode = 0;		// 手押しモードoff
 	slope_mode = 0;		// 上り坂チェック
@@ -84,7 +83,7 @@ void main(void){
 	// フラッシュ初期化
 	if( !initFlash() ) {
 		setBeepPatternS( 0x8000 );
-		readFlashSetup( 1, 1, 1 ,1 ,1 ,1 ,1);	// データフラッシュから前回パラメータを読み込む
+		readFlashSetup( 1, 1, 1 ,1 ,1 ,1 ,1 ,1);	// データフラッシュから前回パラメータを読み込む
 	} else{
 		setBeepPatternS( 0xcc00 );
 	}
@@ -137,7 +136,7 @@ void main(void){
 			} else {			
 				// 手押しモードON
 				lcdPosition( 0, 0 );
-				lcdPrintf("now %3d", pattern);
+				lcdPrintf("mark %x  ", targetmarker);
 				lcdPosition( 0, 1 );
 				lcdPrintf("log %3d", logmeter());
 			}
@@ -170,8 +169,8 @@ void main(void){
 				
 				if ( msdset ) init_log();	// ログ記録準備
 				
-				if ( !fixSpeed ) writeFlashBeforeStart(1, 0, 1, 1, 1, 1);	// 速度パラメータをデータフラッシュに保存
-				else writeFlashBeforeStart(0, 0, 1, 1, 1, 1);		// 速度パラメータ以外を保存
+				if ( !fixSpeed ) writeFlashBeforeStart(1, 0, 1, 1, 1, 1, 1);	// 速度パラメータをデータフラッシュに保存
+				else writeFlashBeforeStart(0, 0, 1, 1, 1, 1, 1);		// 速度パラメータ以外を保存
 				
 				wait_lcd(500);		// 500ms待つ
 				cnt1 = 0;
@@ -183,7 +182,7 @@ void main(void){
 				
 				// 白線トレース用PIDゲイン保存
 				// 角度制御用PIDゲイン保存
-				writeFlashBeforeStart(0, 0, 1, 1, 0, 0);
+				writeFlashBeforeStart(0, 0, 1, 1, 0, 1, 0);
 				setBeepPatternS( 0xfff0 );
 				// 変数初期化
 				init_Parameter( 1 );
@@ -343,7 +342,7 @@ void main(void){
 				pattern = 12;
 				break;
 			}
-			if ( enc1 >= enc_mm( 40 ) ) {
+			if ( enc1 >= enc_mm( 60 ) ) {
 				if ( targetmarker == 0xe ) {
 					targetmarker = 0xf;
 				} else if ( targetmarker == 0xf ) {
@@ -359,7 +358,7 @@ void main(void){
 				}
 				
 				enc1 = 0;
-				pattern = 11;
+				pattern = 31;
 				break;
 			}
 			break;
@@ -376,7 +375,7 @@ void main(void){
 				pattern = 12;
 				break;
 			}
-			if ( enc1 >= enc_mm( 40 ) ) {
+			if ( enc1 >= enc_mm( 60 ) ) {
 				if ( targetmarker == 0xa ) {
 					targetmarker = 0xb;
 				} else if ( targetmarker == 0xc ) {
@@ -384,10 +383,78 @@ void main(void){
 				}
 				
 				enc1 = 0;
-				pattern = 11;
+				pattern = 31;
 				break;
 			}
 			break;
+			
+		//-------------------------------------------------------------------
+		// 【030】マークE(平行的)
+		//-------------------------------------------------------------------
+		case 31:
+			targettheta();
+			servoPwmOut( ServoPwm );
+			servoPwmOut2( ServoPwm3 );
+			targetSpeed = speed_straight * SPEED_CURRENT;
+			diff( motorPwm );
+			// 500mm進む
+			if ( enc1 > enc_mm( 600 ) ) {
+				enc1 = 0;
+				pattern = 32;
+				break;
+			}
+			break;
+			
+		case 32:
+				SetAngle2 = 0;
+				servoPwmOut2( ServoPwm3 );
+				servoPwmOut( ServoPwm );
+				targetSpeed = speed_straight * SPEED_CURRENT;
+				diff( motorPwm );
+				if ( enc1 > enc_mm( 200 ) ) {
+					enc1 = 0;
+					pattern = 11;
+					break;
+				}
+				break;
+		//-------------------------------------------------------------------
+		// 【030】マークF(平行的)
+		//-------------------------------------------------------------------
+		case 41:
+			servoPwmOut( ServoPwm );
+			targetSpeed = speed_straight * SPEED_CURRENT;
+			diff( motorPwm );
+			if ( enc1 > enc_mm( 500 ) ) {
+				pattern = 32;
+				break;
+			}
+			break;
+			
+		case 42:
+				SetAngle2 = 300;
+				servoPwmOut2( ServoPwm3 );
+				servoPwmOut( ServoPwm );
+				targetSpeed = speed_straight * SPEED_CURRENT;
+				diff( motorPwm );
+				if ( enc1 > enc_mm( 200 ) ) {
+					enc1 = 0;
+					pattern = 33;
+					break;
+				}
+				break;
+				
+		case 43:
+				SetAngle2 = 0;
+				servoPwmOut2( ServoPwm3 );
+				servoPwmOut( ServoPwm );
+				targetSpeed = speed_straight * SPEED_CURRENT;
+				diff( motorPwm );
+				if ( enc1 > enc_mm( 100 ) ) {
+					enc1 = 0;
+					pattern = 11;
+					break;
+				}
+				break;
 		//-------------------------------------------------------------------
 		//【100】停止処理
 		//-------------------------------------------------------------------
@@ -400,7 +467,7 @@ void main(void){
 		case 102:
 			servoPwmOut( ServoPwm );
 			targetSpeed = 0;
-			motor_f( motorPwm, motorPwm );
+			( motorPwm, motorPwm );
 			motor_r( motorPwm, motorPwm );
 			
 			if( Encoder <= 1 && Encoder >= -1 ) {
@@ -412,7 +479,6 @@ void main(void){
 			
 		case 103:
 			servoPwmOut( 0 );
-			motor_f( 0, 0 );
 			motor_r( 0, 0 );
 			
 			if( msdset == 1 ) {
@@ -502,7 +568,7 @@ void Timer (void) {
 					cnt_out = 0;
 				}
 			}
-			if ( sensor_inp() == 0x0 && pattern != 53 && pattern != 63 ) cnt_out2++;	// センサ全消灯
+			if (getAnalogSensor() >= -100 && getAnalogSensor() <= 100) cnt_out2++;	// センサ全消灯
 			else cnt_out2 = 0;
 			if ( Encoder <= 1 && Encoder >= -1 ) cnt_out3++;		// エンコーダ停止(ひっくり返った？)
 			else cnt_out3 = 0;
@@ -534,6 +600,7 @@ void Timer (void) {
 	if ( angle_mode ) servoControl2();		// 角度
 	else 			servoControl();	// 白線
 	motorControl();		// モータ
+	servoControl3();
 	
 	// MicroSD書き込み
 	microSDProcess();
@@ -558,7 +625,6 @@ void Timer (void) {
 	} else {
 		// UART受信
 		commandSCI1();
-		getPichAngleAD();
 		getTurningAngleEnc();
 		if (cnt_gyro > 200) {
 			PichAngleAD = 0;

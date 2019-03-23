@@ -29,6 +29,7 @@ char pattern_parameter4 = 1;
 char pattern_gain = 1;
 char pattern_gain2 = 1;
 char pattern_gain3 = 1;
+char pattern_gain4 = 1;
 char pattern_speedseting = 1;
 char pattern_msd = 1;
 char pattern_flash = 1;
@@ -173,219 +174,9 @@ void setup( void )
 			break;
 			
 		//------------------------------------------------------------------
-		// 【0x4】パラメータ調整(クランク)
+		// 【0x4】ゲイン調整(サーボ)
 		//------------------------------------------------------------------
 		case 0x4:
-			data_tuning ( &pattern_parameter2, 1, LEFT );
-			
-			if ( pattern_parameter2 == 7 ) pattern_parameter2 = 1;
-			else if ( pattern_parameter2 == 0 ) pattern_parameter2 = 6;
-			
-			switch( pattern_parameter2 ) {
-				case 1:
-					// クロスライン通過時
-					lcdPosition( 0, 0 );
-					lcdPrintf("CROSLINE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_crossline / 10 );
-					
-					data_tuning ( &speed_crossline, 2, RIGHT );
-					break;
-				case 2:
-					// クランク前トレース
-					lcdPosition( 0, 0 );
-					lcdPrintf("CL_TRACE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_ckank_trace / 10 );
-					
-					data_tuning ( &speed_ckank_trace, 2, RIGHT );
-					break;
-				case 3:
-					// 右クランク旋回速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("RCL_CUR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_rightclank_curve / 10 );
-					
-					data_tuning ( &speed_rightclank_curve, 2, RIGHT );
-					break;
-				case 4:
-					// 右クランク復帰速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("RCL_ESC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_rightclank_escape / 10 );
-					
-					data_tuning ( &speed_rightclank_escape, 2, RIGHT );
-					break;
-					
-				case 5:
-					// 左クランク旋回速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("LCL_CUR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_leftclank_curve / 10 );
-					
-					data_tuning ( &speed_leftclank_curve, 2, RIGHT );
-					break;
-					
-				case 6:
-					// 左クランク復帰速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("LCL_ESC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_leftclank_escape / 10 );
-					
-					data_tuning ( &speed_leftclank_escape, 2, RIGHT );
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
-		// 【0x5】パラメータ調整(レーンチェンジ)
-		//------------------------------------------------------------------
-		case 0x5:
-			data_tuning ( &pattern_parameter3, 1, LEFT );
-			
-			if ( pattern_parameter3 == 8 ) pattern_parameter3 = 1;
-			else if ( pattern_parameter3 == 0 ) pattern_parameter3 = 7;
-			
-			switch( pattern_parameter3 ) {
-				case 1:
-					// ハーフライン通過時
-					lcdPosition( 0, 0 );
-					lcdPrintf("HALFLINE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_halfine / 10 );
-					
-					data_tuning ( &speed_halfine, 2, RIGHT );
-					break;
-				case 2:
-					// 右レーンチェンジ進入速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("RLC_STR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_rightchange_trace / 10 );
-					
-					data_tuning ( &speed_rightchange_trace, 2, RIGHT );
-					break;
-				case 3:
-					// 右レーンチェンジ旋回速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("RLC_CUR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_rightchange_curve / 10 );
-					
-					data_tuning ( &speed_rightchange_curve, 2, RIGHT );
-					break;
-				case 4:
-					// 右レーンチェンジ復帰速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("RLC_ESC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_rightchange_escape / 10 );
-					
-					data_tuning ( &speed_rightchange_escape, 2, RIGHT );
-					break;
-				case 5:
-					// 左レーンチェンジ進入速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("LLC_STR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_leftchange_trace / 10 );
-					
-					data_tuning ( &speed_leftchange_trace, 2, RIGHT );
-					break;
-				case 6:
-					// 左レーンチェンジ旋回速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("LLC_CUR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_leftchange_curve / 10 );
-					
-					data_tuning ( &speed_leftchange_curve, 2, RIGHT );
-					break;
-				case 7:
-					// 左レーンチェンジ旋回速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("LLC_ESC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_leftchange_escape / 10 );
-					
-					data_tuning ( &speed_leftchange_escape, 2, RIGHT );
-					break;
-			}
-			break;
-		
-		//------------------------------------------------------------------
-		// 【0x6】パラメータ調整(坂道、角度)
-		//------------------------------------------------------------------
-		case 0x6:
-			data_tuning ( &pattern_parameter4, 1, LEFT );
-			
-			if ( pattern_parameter4 == 7 ) pattern_parameter4 = 1;
-			else if ( pattern_parameter4 == 0 ) pattern_parameter4 = 6;
-			
-			switch( pattern_parameter4 ) {
-				case 1:
-					// 坂道ブレーキ
-					lcdPosition( 0, 0 );
-					lcdPrintf("SL_BRAKE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_slope_brake / 10 );
-					
-					data_tuning ( &speed_slope_brake, 2, RIGHT );
-					break;
-				case 2:
-					// 坂読み飛ばし速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("SL_TRACE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_slope_trace / 10 );
-					
-					data_tuning ( &speed_slope_trace, 2, RIGHT );
-					break;
-				case 3:
-					// 右クランク旋回角度
-					lcdPosition( 0, 0 );
-					lcdPrintf("ANG_RCR ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("    %4d", angle_rightclank );
-					
-					data_tuning ( &angle_rightclank, 1, RIGHT );
-					break;
-				case 4:
-					// 左クランク旋回角度
-					lcdPosition( 0, 0 );
-					lcdPrintf("ANG_LCL ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("    %4d", angle_leftclank );
-					
-					data_tuning ( &angle_leftclank, 1, RIGHT );
-					break;
-				case 5:
-					// 右レーンチェンジ旋回角度
-					lcdPosition( 0, 0 );
-					lcdPrintf("ANG_RLC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("    %4d", angle_rightchange );
-					
-					data_tuning ( &angle_rightchange, 1, RIGHT );
-					break;
-				case 6:
-					// 左レーンチェンジ旋回角度
-					lcdPosition( 0, 0 );
-					lcdPrintf("ANG_LLC ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("    %4d", angle_leftchange );
-					
-					data_tuning ( &angle_leftchange, 1, RIGHT );
-					break;
-			}
-			break;
-		//------------------------------------------------------------------
-		// 【0x7】ゲイン調整(サーボ)
-		//------------------------------------------------------------------
-		case 0x7:
 			lcdPosition( 0, 0 );
 			lcdPrintf("kp ki kd");
 			
@@ -446,9 +237,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0x8】ゲイン調整(角度)
+		// 【0x5】ゲイン調整(角度)
 		//------------------------------------------------------------------
-		case 0x8:
+		case 0x5:
 			lcdPosition( 0, 0 );
 			lcdPrintf("kp ki kd");
 			
@@ -465,8 +256,14 @@ void setup( void )
 			} else if ( tasw_get() == 0x0 ) {
 				push1 = 0;
 			}
-			if ( pattern_gain2 == 4 ) pattern_gain2 = 1;
-			else if ( pattern_gain2 == 0 ) pattern_gain2 = 3;
+			if ( pattern_gain2 == 4 ) {
+				pattern_gain4 = 1;
+				servo_test = 1;
+			}
+			else if ( pattern_gain2 == 0 ) {
+				pattern_gain4 = 3;
+				servo_test = 0;
+			}
 			
 			switch( pattern_gain2 ) {
 				case 1:
@@ -502,9 +299,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0x9】ゲイン調整(速度)
+		// 【0x6】ゲイン調整(速度)
 		//------------------------------------------------------------------
-		case 0x9:
+		case 0x6:
 			lcdPosition( 0, 0 );
 			lcdPrintf("kp ki kd");
 			
@@ -552,9 +349,70 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xa】1m/sでのパラメータ
+		// 【0x7】ゲイン調整(角度2)
 		//------------------------------------------------------------------
-		case 0xa:
+		case 0x7:
+			lcdPosition( 0, 0 );
+			lcdPrintf("kp ki kd");
+			
+			data_select( &servo_test2, 8 );
+			if ( servo_test == 1 ) servoPwmOut2( ServoPwm3 );
+			else servoPwmOut2( 0 );
+			if ( servo_test2 == 1 ) SetAngle2 = 400;
+			else SetAngle2 = -400;
+			
+			if ( tasw_get() == 0x4 && push1 == 0 ) {
+				push1 = 1;
+				pattern_gain4 += 1;
+			} else if ( tasw_get() == 0x0 ) {
+				push1 = 0;
+			}
+			if ( pattern_gain4 == 4 ) {
+				pattern_gain4 = 1;
+				servo_test = 1;
+			}
+			else if ( pattern_gain4 == 0 ) {
+				pattern_gain4 = 3;
+				servo_test = 0;
+			}
+			
+			switch( pattern_gain4 ) {
+				case 1:
+					// kp4
+					//値を点滅
+					lcdPosition( 0, 1 );
+					if ( cnt_setup >= 500 ) cnt_setup = 0;
+					if ( cnt_setup < 250 ) lcdPrintf("   %2d %2d", ki4_buff, kd4_buff);
+					else				lcdPrintf("%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					
+					data_tuning ( &kp4_buff, 1, RIGHT );
+					break;
+				case 2:
+					// ki4
+					//値を点滅
+					lcdPosition( 0, 1 );
+					if ( cnt_setup >= 500 ) cnt_setup = 0;
+					if ( cnt_setup < 250 ) lcdPrintf("%2d    %2d", kp4_buff, kd4_buff);
+					else				lcdPrintf("%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					
+					data_tuning ( &ki4_buff, 1, RIGHT );
+					break;
+				case 3:
+					// kd4
+					//値を点滅
+					lcdPosition( 0, 1 );
+					if ( cnt_setup >= 500 ) cnt_setup = 0;
+					if ( cnt_setup < 250 )	lcdPrintf("%2d %2d   ", kp4_buff, ki4_buff);
+					else				lcdPrintf("%2d %2d %2d", kp4_buff, ki4_buff, kd4_buff);
+					
+					data_tuning ( &kd4_buff, 1, RIGHT );
+					break;
+			}
+			break;
+		//------------------------------------------------------------------
+		// 【0x8】1m/sでのパラメータ
+		//------------------------------------------------------------------
+		case 0x8:
 			data_tuning ( &pattern_speedseting, 1, LEFT );
 				
 			if ( pattern_speedseting == 4 ) pattern_speedseting = 1;
@@ -616,14 +474,14 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xb】Motor_test
+		// 【0x9】Motor_test
 		//------------------------------------------------------------------
-		case 0xb:
+		case 0x9:
 			data_tuning ( &pattern_sensor, 1, LEFT );
 			angle_mode = 0;
 			
-			if ( pattern_sensor == 16 ) pattern_sensor = 1;
-			else if ( pattern_sensor == 0 ) pattern_sensor = 15;
+			if ( pattern_sensor == 14 ) pattern_sensor = 1;
+			else if ( pattern_sensor == 0 ) pattern_sensor = 13;
 			
 			switch( pattern_sensor ) {
 				case 1:
@@ -648,17 +506,10 @@ void setup( void )
 					if ( tasw_get() == 0x2 ) RollAngleIMU = 0;
 					if ( cnt_setup >= 100 ) {
 						cnt_setup = 0;
-						if ( IMUSet ) {
-							lcdPosition( 0, 0 );
-							lcdPrintf("Roll%4d", (short)RollAngleIMU);
-							lcdPosition( 0, 1 );
-							lcdPrintf("Pich%4d",(short)PichAngleIMU);
-						} else {
-							lcdPosition( 0, 0 );
-							lcdPrintf("        ");
-							lcdPosition( 0, 1 );
-							lcdPrintf("Pich%4d",(short)PichAngleAD);
-						}
+						lcdPosition( 0, 0 );
+						lcdPrintf("Roll%4d", (short)RollAngleIMU);
+						lcdPosition( 0, 1 );
+						lcdPrintf("Pich%4d",(short)PichAngleIMU);
 					}
 					break;
 					
@@ -685,6 +536,17 @@ void setup( void )
 					break;
 					
 				case 5:
+					// 槍サーボポテンションメーター
+					lcdPosition( 0, 0 );
+					lcdPrintf("Angle2  ");
+					if ( cnt_setup >= 100 ) {
+						cnt_setup = 0;
+						lcdPosition( 0, 1 );
+						lcdPrintf("    %4d",getServoAngle2());
+					}
+					break;
+					
+				case 6:
 					// アナログセンサ
 					if ( cnt_setup >= 100 ) {
 						cnt_setup = 0;
@@ -695,7 +557,7 @@ void setup( void )
 					}
 					break;
 					
-				case 6:
+				case 7:
 					// デジタルセンサ
 					motor_test = 0;
 					if ( cnt_setup >= 100 ) {
@@ -708,7 +570,7 @@ void setup( void )
 					}
 					break;
 					
-				case 7:
+				case 8:
 					// モーターテスト
 					lcdPosition( 0, 0 );
 					lcdPrintf("Motortes");
@@ -717,26 +579,16 @@ void setup( void )
 					demo = 0;
 					if ( motor_test == 1 ) {
 						diff( 30 );
-						//motor_f( 30, 30 );
+						////motor_f( 30, 30 );
 						//motor_r( 30, 30 );
 					} else {
-						motor_f( 0, 0 );
+						//motor_f( 0, 0 );
 						motor_r( 0, 0 );
 					}
 					
 					data_select( &motor_test, 1 );
 					break;
-				case 8:
-					// サーボテスト
-					lcdPosition( 0, 0 );
-					lcdPrintf("Servo   ");
-					lcdPosition( 0, 1 );
-					lcdPrintf("        ");
-					if ( motor_test == 1 ) servoPwmOut( 20 );
-					else				servoPwmOut( 0 );
 					
-					data_select( &motor_test, 1 );
-					break;
 				case 9:
 					// 関数テスト
 					lcdPosition( 0, 0 );
@@ -751,14 +603,6 @@ void setup( void )
 					break;
 					
 				case 10:
-					// Bluetooth
-					lcdPosition( 0, 0 );
-					lcdPrintf("Text   %d", revErr);
-					lcdPosition( 0, 1 );
-					lcdPrintf("%s",txt_data);
-					break;
-					
-				case 11:
 					// 旋回角度
 					lcdPosition( 0, 0 );
 					lcdPrintf("IMU %4d", (short)TurningAngleIMU);
@@ -768,29 +612,18 @@ void setup( void )
 					if ( tasw_get() == 0x2 ) TurningAngleIMU = 0;
 					break;
 					
-				case 12:
+				case 11:
 					// IMU
 					if ( cnt_setup >= 500 ) {
 						cnt_setup = 0;
 						lcdPosition( 0, 0 );
-						lcdPrintf("xa%2.3f",(double)rawXa / ACCELLSB);
-						lcdPosition( 0, 1 );
-						lcdPrintf("ya%2.3f",(double)rawYa / ACCELLSB);
-					}
-					break;
-					
-				case 13:
-					// IMU
-					if ( cnt_setup >= 500 ) {
-						cnt_setup = 0;
-						lcdPosition( 0, 0 );
-						lcdPrintf("za%2.3f",(double)rawZa / ACCELLSB);
+						lcdPrintf("        ");
 						lcdPosition( 0, 1 );
 						lcdPrintf("xg%2.3f",(double)rawXg/GYROLSB);
 					}
 					break;
 					
-				case 14:
+				case 12:
 					// IMU
 					if ( cnt_setup >= 500 ) {
 						cnt_setup = 0;
@@ -801,7 +634,7 @@ void setup( void )
 					}
 					break;
 					
-				case 15:
+				case 13:
 					// who am i
 					if ( cnt_setup >= 500 ) {
 						cnt_setup = 0;
@@ -820,16 +653,16 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xc】位置固定デモ
+		// 【0xa】位置固定デモ
 		//------------------------------------------------------------------
-		case 0xc:
+		case 0xa:
 			lcdPosition( 0, 0 );
 			lcdPrintf("DEMO%4d",motorPwm);
 			targetSpeed  = 0;
 			
 			data_select ( &demo, 1 );
 			if ( demo == 1 ) {
-				motor_f( motorPwm, motorPwm );
+				//motor_f( motorPwm, motorPwm );
 				motor_r( motorPwm, motorPwm );
 				lcdPosition( 0, 1 );
 				lcdPrintf("   Start");
@@ -839,9 +672,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xd】MicroSD
+		// 【0xb】MicroSD
 		//------------------------------------------------------------------
-		case 0xd:
+		case 0xb:
 			lcdPosition( 0, 0 );
 			lcdPrintf("MicroSD%d", msdset);
 			
@@ -1031,7 +864,7 @@ void setup( void )
 					}
 					if ( tasw_get() == 0x1 && push1 == 0 && msdFlag == 0) {
 						push1 = 1;
-						readFlashSetup( 0, 0, 1 ,0 ,0 ,0 ,0);
+						readFlashSetup( 0, 0, 1 ,0 ,0 ,0 ,0 ,0);
 						init_log();	// ログ記録準備
 						msdFlag = 1;		// データ記録開始
 						lcdPosition( 0, 1 );
@@ -1061,9 +894,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xe】キャリブレーション
+		// 【0xc】キャリブレーション
 		//------------------------------------------------------------------
-		case 0xe:
+		case 0xc:
 			lcdPosition( 0, 0 );
 			lcdPrintf("Angle0  ");
 			lcdPosition( 0, 1 );
@@ -1087,9 +920,9 @@ void setup( void )
 			}
 			break;
 		//------------------------------------------------------------------
-		// 【0xf】フラッシュ
+		// 【0xd】フラッシュ
 		//------------------------------------------------------------------
-		case 0xf:
+		case 0xd:
 			switch( pattern_flash ) {
 				case 1:
 					lcdPosition( 0, 0 );

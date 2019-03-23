@@ -30,8 +30,8 @@ static int			senG;	// ゲートセンサ積算AD値
 static int			senC;	// 中心アナログセンサ積算AD値
 static int			senLL;	// 最左端アナログセンサ積算AD値
 static int			senRR;	// 最右端アナログセンサ積算AD値
-static int			gy;		// ジャイロセンサ積算AD値
-short 			gyro;		// ジャイロセンサ平均AD値
+static int			pot2;		// ジャイロセンサ積算AD値
+short 			Angle2;		// ジャイロセンサ平均AD値
 static int			pot;		// ポテンションメーター積算AD値
 short 			Angle;	// ポテンションメーター平均AD値
 short				sensorR;	// 右アナログセンサ平均AD値
@@ -61,6 +61,7 @@ signed char		accele_fL;		// 左前モーターPWM値
 signed char		accele_rR;		// 右後モーターPWM値
 signed char		accele_rL;		// 左後モーターPWM値
 signed char		sPwm;		// サーボモーターPWM値
+signed char		sPwm2;		// 槍サーボモーターPWM値
 
 /////////////////////////////////////////////////////////////////////
 // モジュール名 ADconverter						//
@@ -77,7 +78,7 @@ void ADconverter ( void )
 	if ( ADTimer10 == 10 ) {
 		ADTimer10 = 0;
 		
-		gyro = gy / 10;
+		Angle2 = pot2 / 10;
 		Angle = pot / 10;
 		sensorR = senR / 10;
 		sensorL = senL / 10;
@@ -92,7 +93,7 @@ void ADconverter ( void )
 		senC = 0;
 		senR = 0;
 		senRR = 0;
-		gy = 0;
+		pot2 = 0;
 		pot = 0;
 	}
 	
@@ -103,7 +104,7 @@ void ADconverter ( void )
 	senC += result[6];
 	senR += result[7];
 	senRR += result[8];
-	gy += result[12];
+	pot2 += result[12];
 	pot += result[13];
 	
 }
@@ -237,9 +238,9 @@ unsigned char tasw_get(void)
 // 引数         なし									//
 // 戻り値       センサ値									//
 ///////////////////////////////////////////////////////////////////////////
-short getGyro(void) 
+short getServoAngle2(void) 
 {
-	return ( gyro - 1796 );
+	return ( SERVO_CENTER2 - Angle2 );
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 getServoAngle							//
@@ -350,6 +351,7 @@ void beepProcessS( void )
 // 引数         accelefL, accelefR(PWMを1～100%で指定)			//
 // 戻り値       なし									//
 ///////////////////////////////////////////////////////////////////////////
+/*
 void motor_f( signed char accelefL, signed char accelefR )
 {
 	uint16_t pwmfl, pwmfr;
@@ -402,7 +404,7 @@ void motor_f( signed char accelefL, signed char accelefR )
 		DIR_FR_REV
 		PWM_FR_OUT
 	}
-}
+}*/
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 motor_r								//
 // 処理概要     モーターのPWMの変更						//
@@ -473,7 +475,7 @@ void servoPwmOut( signed char servopwm )
 	uint16_t pwm;
 	short angle;
 	
-	sPwm = servopwm;		// ログ用変数に代入
+	sPwm2 = servopwm;		// ログ用変数に代入
 	//servopwm = -servopwm;		// 回転方向を変える
 	
 	// サーボリミット制御
@@ -498,6 +500,43 @@ void servoPwmOut( signed char servopwm )
 		pwm = -pwm;
 		DIR_SERVO_REV
 		PWM_SERVO_OUT
+	}
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 servoPwmOut2							//
+// 処理概要    槍サーボのPWMの変更						//
+// 引数         spwm									//
+// 戻り値       なし									//
+///////////////////////////////////////////////////////////////////////////
+void servoPwmOut2( signed char servopwm )
+{
+	uint16_t pwm;
+	short angle;
+	
+	sPwm2 = servopwm;		// ログ用変数に代入
+	
+	// サーボリミット制御
+	angle = getServoAngle2();
+	
+	// 角度によるリミット制御
+	if ( angle >= SERVO_LIMIT2 ) servopwm = -15;
+	if ( angle <= -SERVO_LIMIT2 ) servopwm = 15;
+	
+	// ポテンションメーターが外れていたら制御しない
+	if ( angle > SERVO_LIMIT2 + 100 ) servopwm = 0;
+	if ( angle < -SERVO_LIMIT2 - 100 ) servopwm = 0;
+
+	pwm = (uint16_t)TGR_SERVO * servopwm / 100;
+	// サーボモータ制御
+	if( servopwm > 0) {				
+		// 正転
+		DIR_SERVO2_FOR
+		PWM_SERVO2_OUT
+	} else {				
+		// 逆転
+		pwm = -pwm;
+		DIR_SERVO2_REV
+		PWM_SERVO2_OUT
 	}
 }
 ///////////////////////////////////////////////////////////////////////////

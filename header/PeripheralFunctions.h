@@ -3,14 +3,16 @@
 //====================================//
 // インクルード									//
 //====================================//
-#include "R_PG_RX631_mcr_ver3.0.h"
+#include "R_PG_RX631_Lancer.h"
 //====================================//
 // シンボル定義									//
 //====================================//
 #define SERVO_CENTER		2010		// サーボセンターのAD値
 #define SERVO_LIMIT		430		// サーボリミットAD値±
+#define SERVO_LIMIT2		700		// 槍サーボリミットAD値±
+#define SERVO_CENTER2		2058		// サーボセンターのAD値
 #define TGR_MOTOR			4798		// ジェネラルレジスタ初期値(駆動モータ)
-#define TGR_SERVO			2878		// ジェネラルレジスタ初期値(サーボ)
+#define TGR_SERVO			2879		// ジェネラルレジスタ初期値(サーボ)
 #define PALSE_METER		24750	// 1mのパルス
 #define PALSE_MILLIMETER	24.75F	// 1mmのパルス
 #define SPEED_CURRENT		25		// 1m/sの時　1msのパルス
@@ -60,10 +62,6 @@
 // MTU0,1,2,3のカウント開始
 #define START_MTU		R_PG_Timer_SynchronouslyStartCount_MTU_U0( 1, 1, 1, 1, 0);
 
-// 左前輪
-#define DIR_FL_FOR		R_PG_IO_PORT_Write_PB2( 0 );		// モータ回転方向(正転)
-#define DIR_FL_REV		R_PG_IO_PORT_Write_PB2( 1 );		// モータ回転方向(正転)
-#define PWM_FL_OUT	R_PG_Timer_SetTGR_D_MTU_U0_C0( pwmfl );	// PWM出力
 // 右前輪
 #define DIR_FR_FOR		R_PG_IO_PORT_Write_PB4( 0 );
 #define DIR_FR_REV		R_PG_IO_PORT_Write_PB4( 1 );
@@ -80,6 +78,10 @@
 #define DIR_SERVO_FOR	R_PG_IO_PORT_Write_PB6( 0 );
 #define DIR_SERVO_REV	R_PG_IO_PORT_Write_PB6( 1 );
 #define PWM_SERVO_OUT	R_PG_Timer_SetTGR_B_MTU_U0_C2( pwm );
+// 槍サーボ
+#define DIR_SERVO2_FOR	R_PG_IO_PORT_Write_PB2( 0 );		// モータ回転方向(正転)
+#define DIR_SERVO2_REV	R_PG_IO_PORT_Write_PB2( 1 );		// モータ回転方向(正転)
+#define PWM_SERVO2_OUT	R_PG_Timer_SetTGR_D_MTU_U0_C0( pwm );	// PWM出力
 
 /******************************************************************************************/
 
@@ -111,6 +113,7 @@ extern signed char	accele_fL;		// 左前モーターPWM値
 extern signed char	accele_rR;		// 右後モーターPWM値
 extern signed char	accele_rL;		// 左後モーターPWM値
 extern signed char	sPwm;		// サーボモーターPWM値
+extern signed char	sPwm2;		// 槍サーボモーターPWM値
 
 //====================================//
 // プロトタイプ宣言								//
@@ -133,7 +136,7 @@ unsigned char tasw_get ( void );
 unsigned char dipsw_get( void );
 
 // センサ関連
-short getGyro( void );
+short getServoAngle2( void );
 short getServoAngle(void);
 short getAnalogSensor( void );
 unsigned char sensor_inp( void );
@@ -149,7 +152,8 @@ void motor_f( signed char accelefL, signed char accelefR );
 void motor_r( signed char accelerL, signed char accelerR );
 
 // サーボ関連
-void servoPwmOut( signed char pwm );
+void servoPwmOut( signed char servopwm );
+void servoPwmOut2( signed char servopwm );
 
 // 比較関連
 int short_sort( const void* a, const void* b );

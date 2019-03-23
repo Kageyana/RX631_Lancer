@@ -634,7 +634,7 @@ void writeFlashData ( short startBlockNumber, short endBlockNumber, short endDat
 // 引数         Addr: E2データフラッシュ領域のアドレス					//
 // 戻り値       Addrの値								//
 //////////////////////////////////////////////////////////////////////////////////////////
-void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pid_angle, bool pid_speed, bool meter)
+void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pid_angle, bool pid_speed, bool pid_angle2, bool meter)
 {
 	short s, s2;
 	// フラッシュ読み込み開始
@@ -832,7 +832,24 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 			printf("PID3gain Initialize\n");
 		}
 	}
-	
+	// 槍角度制御用PIDゲイン読み込み
+	if ( pid_angle2 ) {
+		// 全ブロックイレーズされているか確認する
+		if ( checkBlank( ( PID4_STARTAREA *32 ) + FLASHSTARTADDR ) ) {
+			readbeforeAddr( PID4_STARTAREA, PID4_ENDAREA );	// 前回保存時のアドレス読み込み
+			readFlashArray( beforeAddr, flashDataBuff, 3 );		// flashDataBuffにPIDゲイン読み込み
+			// データ取得
+			kp4_buff = flashDataBuff[ 0 ];
+			ki4_buff = flashDataBuff[ 1 ];
+			kd4_buff = flashDataBuff[ 2 ];
+		} else if ( checkBlank( ( PID3_STARTAREA *32 ) + FLASHSTARTADDR ) <= 0 ) {
+			// 全ブロックイレーズまたはエラーが発生したら初期値に設定する
+			kp4_buff = KP4;
+			ki4_buff = KI4;
+			kd4_buff = KD4;
+			printf("PID4gain Initialize\n");
+		}
+	}
 	// 停止距離読み込み
 	if ( meter ) {
 		// 全ブロックイレーズされているか確認する
@@ -853,7 +870,7 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 // 引数         Addr: E2データフラッシュ領域のアドレス					//
 // 戻り値       Addrの値								//
 //////////////////////////////////////////////////////////////////////////////////////////
-void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_angle, bool pid_speed, bool meter )
+void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_angle, bool pid_speed, bool pid_angle2, bool meter )
 {
 	// フラッシュ書き込み開始
 	if ( speed ) {
@@ -918,6 +935,14 @@ void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_a
 		flashDataBuff[ 1 ] = ki3_buff;
 		flashDataBuff[ 2 ] = kd3_buff;
 		writeFlashData( PID3_STARTAREA, PID3_ENDAREA, PID3_DATA, 3 );
+	}
+	
+	if ( pid_angle2 ) {
+		// 速度制御用PIDゲイン保存
+		flashDataBuff[ 0 ] = kp4_buff;
+		flashDataBuff[ 1 ] = ki4_buff;
+		flashDataBuff[ 2 ] = kd4_buff;
+		writeFlashData( PID4_STARTAREA, PID4_ENDAREA, PID4_DATA, 3 );
 	}
 	
 	if ( meter ) {

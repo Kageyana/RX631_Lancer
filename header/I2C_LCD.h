@@ -3,7 +3,7 @@
 //====================================//
 // インクルード                  						       //
 //====================================//
-#include "R_PG_RX631_mcr_ver3.0.h"
+#include "R_PG_RX631_Lancer.h"
 #include "SCI.h"
 #include <stdio.h>
 #include <stdarg.h>

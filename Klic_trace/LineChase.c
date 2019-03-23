@@ -13,6 +13,8 @@ char	pushcart_mode;		// 手押しモード可否	0:自動走行	1:手押し
 char	msdset;			// MicroSDが初期化されたか	0:初期化失敗	1:初期化成功
 char	IMUSet = 0;		// IMUが初期化されたか	0: 初期化失敗	1:初期化成功
 
+char	targetmarker = 0;	// 的の番号
+
 // パラメータ関連
 // 距離
 short	stopping_meter;			// 停止距離
@@ -21,7 +23,7 @@ short	speed_straight;			// 通常トレース
 short	speed_curve_brake;		// カーブブレーキ
 short	speed_curve_r600;		// R600カーブ速度
 short	speed_curve_r450;		// R450カーブ速度
-short	speed_curve_straight;		// S字カーブ直線速度
+short	speed_curve_straight;	// S字カーブ直線速度
 
 short	speed_crossline;			// クロスライン進入速度
 short	speed_ckank_trace;		// クランク進入速度
@@ -49,7 +51,7 @@ short	angle_rightchange;		// 右レーンチェンジ旋回角度
 short	angle_leftchange;		// 右レーンチェンジ旋回角度
 
 // タイマ関連
-short			cnt_gyro;				// 角度計算用カウンタ
+short			cnt_gyro;			// 角度計算用カウンタ
 
 // 角度関連
 double 		TurningAngleEnc;	// エンコーダから求めた旋回角度
@@ -58,24 +60,30 @@ double		gyVoltageBefore;
 
 // サーボ関連
 // 白線トレース
-signed char	ServoPwm;	// 白線トレースサーボPWM
-short 		SensorBefore;	// 1ms前のセンサ値
+signed char	ServoPwm;		// 白線トレースサーボPWM
+short 		SensorBefore;		// 1ms前のセンサ値
 char			DevBefore;		// I成分リセット用
-double		Int;			// I成分積算値(白線トレース)
+double		Int;				// I成分積算値(白線トレース)
 // 角度制御
 signed char	ServoPwm2;		// 角度サーボPWM
-short 		SetAngle;		// 目標角度
+short 		SetAngle;			// 目標角度
 short			SetAngleBefore;		// 1ms前の目標角度
-short 		AngleBefore2;	// 1ms前の角度
-char			AngleBefore3;		// I成分リセット用
-double		Int2;			// I成分積算値(角度制御)
+short 		AngleBefore;		// 1ms前の角度
+double		Int2;				// I成分積算値(角度制御)
+
+// 角度制御2
+signed char	ServoPwm3;		// 角度サーボPWM
+short 		SetAngle2;			// 目標角度
+short			SetAngleBefore2;	// 1ms前の目標角度
+short 		AngleBefore2;		// 1ms前の角度
+double		Int4;				// I成分積算値(角度制御)
 
 // モーター関連
-signed char 	motorPwm;	// モーター制御PWM
+signed char 	motorPwm;		// モーター制御PWM
 char 			AccelefBefore;		// I成分リセット用
 short			EncoderBefore;		// 1ms前の速度
 int 			targetSpeedBefore;	// 1ms前の目標速度	
-double 		Int3;			// I成分積算値(速度制御)
+double 		Int3;				// I成分積算値(速度制御)
 short			targetSpeed;		// 目標速度
 
 // デモ関連
@@ -85,6 +93,7 @@ char 	demo;
 char	kp_buff, ki_buff, kd_buff;
 char	kp2_buff, ki2_buff, kd2_buff;
 char kp3_buff, ki3_buff, kd3_buff;
+char kp4_buff, ki4_buff, kd4_buff;
 
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 check_crossline							//
@@ -98,7 +107,7 @@ signed char check_crossline( void )
 	char ret = 0;
 
 	digital_sensor = sensor_inp();
-	if ( digital_sensor == 0x7 ) ret = 1;
+	if ( digital_sensor == 0x5 ) ret = 1;
 	
 	return ret;
 }
@@ -114,7 +123,7 @@ signed char check_rightline( void )
 	char ret = 0;
 
 	digital_sensor = sensor_inp();
-	if ( digital_sensor == 0x3 ) ret = 1;
+	if ( digital_sensor == 0x1 ) ret = 1;
 	return ret;
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -129,34 +138,9 @@ signed char check_leftline( void )
 	char ret = 0;
 
 	digital_sensor = sensor_inp();
-	if ( digital_sensor == 0x6 ) {
+	if ( digital_sensor == 0x4 ) {
 		ret = 1;
 	}
-	return ret;
-}
-///////////////////////////////////////////////////////////////////////////
-// モジュール名 check_slope								//
-// 処理概要     ジャイロセンサの値から坂道検出				//
-// 引数         なし									//
-// 戻り値       0:坂道なし 1:上り坂　-1:下り坂					//
-///////////////////////////////////////////////////////////////////////////
-signed char check_slope( void )
-{
-	short deg, upperline, lowerline;
-	signed char ret = 0;
-
-	if ( IMUSet ) {
-		deg = PichAngleIMU;
-		upperline = SLOPEUPPERLINE_IMU;
-		lowerline = SLOPELOWERLINE_IMU;
-	} else {
-		deg = PichAngleAD;
-		upperline = SLOPEUPPERLINE_AD;
-		lowerline = SLOPELOWERLINE_AD;
-	}
-	if ( deg >= upperline ) ret = 1;
-	if ( deg <= lowerline ) ret = -1;
-	
 	return ret;
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -168,25 +152,6 @@ signed char check_slope( void )
 unsigned int enc_mm( short mm )
 {
 	return PALSE_MILLIMETER * mm;
-}
-//////////////////////////////////////////////////////////////////////////
-// モジュール名 get_degrees							//
-// 処理概要     ジャイロセンサの値から角度算出				//
-// 引数         なし									//
-// 戻り値       なし									//
-//////////////////////////////////////////////////////////////////////////
-void getPichAngleAD( void ) {
-	short s;
-	double gy_voltage, gyro;
-	
-	s = getGyro();
-	gy_voltage = (double)s * AD_3V3VOLTAGE;	// ジャイロセンサから出力された電圧[mV]
-	gyro = gy_voltage * GYROVOLTAGE;	// 角加速度算出
-	
-	PichAngleAD += (double)( gyro + gyVoltageBefore ) * 0.001 / 2;	// 角加速度を積算
-	if( cnt_gyro == INTEGRAL_LIMIT ) PichAngleAD = 0;	// 4msごとに積算値リセット
-	
-	gyVoltageBefore = gyro;
 }
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 servoControl							//
@@ -245,16 +210,15 @@ void servoControl2( void )
 	
 	//サーボモータ用PWM値計算
 	Dev = i - j;
-		
-	// 目標値を超えたらI成分リセット
-	if ( Dev >= 0 && AngleBefore3 == 1 ) Int2 = 0;
-	else if ( Dev < 0 && AngleBefore3 == 0 ) Int2 = 0;
 	
 	// 目標値を変更したらI成分リセット
 	if ( !(i == SetAngleBefore) ) Int2 = 0;
 	
+	if ( Int2 > 160 ) Int2 = 160;
+	else if ( Int2 < -160 ) Int2 = -160;
+	
 	Int2 += (double)Dev * 0.001;
-	Dif = ( Dev - AngleBefore2 ) * 1;		// dゲイン1/1000倍
+	Dif = ( Dev - AngleBefore ) * 1;		// dゲイン1/1000倍
 
 	iP = (int)kp2_buff * Dev;		// 比例
 	iI = (double)ki2_buff * Int2;		// 積分
@@ -266,10 +230,122 @@ void servoControl2( void )
 	if ( iRet >  90 ) iRet =  90;		// マイコンカーが安定したら
 	if ( iRet <  -90 ) iRet = -90;	// 上限を90くらいにしてください
 	
-	if ( Dev >= 0 ) 	AngleBefore3 = 0;
-	else 			AngleBefore3 = 1;
 	SetAngleBefore = i;
 	ServoPwm2 = iRet;
+	AngleBefore = Dev;			// 次回はこの値が1ms前の値となる
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 motorControl							//
+// 処理概要     モーターのPWM決計算						//
+// 引数         なし									//
+// 戻り値       なし									//
+///////////////////////////////////////////////////////////////////////////
+void motorControl( void )
+{
+	int i, j, iRet, Dif, iP, iI, iD, Dev;
+	char kp3, ki3, kd3, v;
+	const char rev_voltage[] = {       // 目標速度でのモーターの電圧テーブル	
+		0, 2, 3, 5, 6, 8, 9, 11, 
+		12, 14, 15, 17, 18, 19, 21, 22, 
+		24, 25, 27, 28, 30, 31, 33, 34, 
+		36, 37, 38, 40, 41, 43, 44, 46, 
+		47, 49, 50, 52, 53, 54, 56, 57, 
+		59, 60, 62, 63, 65, 66, 68, 69, 
+		70, 72, 73, 75, 76, 78, 79, 81, 
+		82, 84, 85, 87, 88, 89, 91, 92, 
+		94, 95, 97, 98, 100, 101, 103, 104, 
+		105, 107, 108, 110, 111, 113, 114, 116
+		};
+	
+	i = targetSpeed;		// 目標値
+	j = Encoder * 10;		// 現在値
+	
+	// デモモードのときゲイン変更
+	if ( demo ) {
+		kp3 = 49;
+		ki3 = 41;
+		kd3 = 0;
+	} else {
+		kp3 = kp3_buff;
+		ki3 = ki3_buff;
+		kd3 = kd3_buff;
+	}
+	
+	// 駆動モーター用PWM値計算
+	Dev = i - j;	// 偏差
+	
+	if ( Dev > 50 || Dev < -50) {
+		// 目標値を超えたらI成分リセット
+		if ( Dev >= 0 && AccelefBefore == 1 ) Int3 = 0;
+		else if ( Dev < 0 && AccelefBefore == 0 ) Int3 = 0;
+		
+		// 目標値を変更したらI成分リセット
+		if ( i != targetSpeedBefore ) Int3 = 0;
+		
+		Int3 += (double)Dev * 0.001;		// 積分
+		Dif = Dev - EncoderBefore;		// 微分　dゲイン1/1000倍
+		
+		iP = (int)kp3 * Dev;			// 比例
+		iI = (double)ki3 * Int3;		// 積分
+		iD = (int)kd3 * Dif;			// 微分
+		iRet = iP + iI + iD;
+		iRet = iRet >> 4;
+		
+		// PWMの上限の設定
+		if ( iRet >  100 )	iRet =  100;
+		if ( iRet <  -100 )	iRet = -100;
+	} else {
+		v = rev_voltage[targetSpeed / SPEED_CURRENT];
+		if ( Dev < 0 ) v = -v;
+		iRet = v;
+	}
+	if ( Dev > 0 )	AccelefBefore = 0;
+	else		AccelefBefore = 1;
+	
+	motorPwm = iRet;
+	
+	EncoderBefore = Dev;
+	targetSpeedBefore = i;
+}
+///////////////////////////////////////////////////////////////////////////
+// モジュール名 servoControl2							//
+// 処理概要     角度制御時サーボのPWMの計算					//
+// 引数         なし									//
+// 戻り値       なし									//
+///////////////////////////////////////////////////////////////////////////
+void servoControl3( void )
+{
+	short i, j, Dev, Dif;
+	int iP, iD, iI, iRet;
+	
+	// 目標値、現在値取得
+	i = SetAngle2;
+	j = getServoAngle2();
+	
+	//サーボモータ用PWM値計算
+	Dev = i - j;
+	
+	// 目標値を変更したらI成分リセット
+	if ( !(i == SetAngleBefore2) ) Int4 = 0;
+	
+	if ( Int4 > 160 ) Int4 = 160;
+	else if ( Int4 < -160 ) Int4 = -160;
+	
+	Int4 += (double)Dev * 0.001;
+	Dif = ( Dev - AngleBefore2 ) * 1;		// dゲイン1/1000倍
+
+	iP = (int)kp4_buff * Dev;		// 比例
+	iI = (double)ki4_buff * Int4;		// 積分
+	iD = (int)kd4_buff * Dif;		// 微分
+	iRet = iP + iI + iD;
+	iRet = iRet >> 4;		// PWMを0～100の間に収める
+
+	// PWMの上限の設定(安定したら70程度に)
+	if ( iRet >  90 ) iRet =  90;		// マイコンカーが安定したら
+	if ( iRet <  -90 ) iRet = -90;	// 上限を90くらいにしてください
+	
+	SetAngleBefore2 = i;
+	ServoPwm3 = iRet;
 	AngleBefore2 = Dev;			// 次回はこの値が1ms前の値となる
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -544,7 +620,7 @@ void diff ( signed char pwm )
 	angle = getServoAngle();
 	
 	if ( angle < 20 && angle > -20 ) {
-		motor_f( pwm, pwm );
+		//motor_f( pwm, pwm );
 		motor_r( pwm, pwm );
 	} else {
 		angle2 = angle;
@@ -563,10 +639,10 @@ void diff ( signed char pwm )
 			R4 = pwm;
 			
 			if ( angle >= 0 ) {
-				motor_f( R1, R3 );
+				//motor_f( R1, R3 );
 				motor_r( R2, R4 );
 			} else {
-				motor_f( R3, R1 );
+				//motor_f( R3, R1 );
 				motor_r( R4, R2 );
 			}
 		} else {
@@ -580,10 +656,10 @@ void diff ( signed char pwm )
 			R4 = pwm;
 			
 			if ( angle >= 0 ) {
-				motor_f( R3, R4 );
+				//motor_f( R3, R4 );
 				motor_r( R1, R2 );
 			} else {
-				motor_f( R4, R3 );
+				//motor_f( R4, R3 );
 				motor_r( R2, R1 );
 			}
 		}
@@ -686,75 +762,24 @@ void getTurningAngleEnc(void)
 	}
 }
 ///////////////////////////////////////////////////////////////////////////
-// モジュール名 motorControl							//
-// 処理概要     モーターのPWM決計算						//
+// モジュール名 targettheta								//
+// 処理概要   	的までの角度を計算						//
 // 引数         なし									//
 // 戻り値       なし									//
 ///////////////////////////////////////////////////////////////////////////
-void motorControl( void )
-{
-	int i, j, iRet, Dif, iP, iI, iD, Dev;
-	char kp3, ki3, kd3, v;
-	const char rev_voltage[] = {       // 目標速度でのモーターの電圧テーブル	
-		0, 2, 3, 5, 6, 8, 9, 11, 
-		12, 14, 15, 17, 18, 19, 21, 22, 
-		24, 25, 27, 28, 30, 31, 33, 34, 
-		36, 37, 38, 40, 41, 43, 44, 46, 
-		47, 49, 50, 52, 53, 54, 56, 57, 
-		59, 60, 62, 63, 65, 66, 68, 69, 
-		70, 72, 73, 75, 76, 78, 79, 81, 
-		82, 84, 85, 87, 88, 89, 91, 92, 
-		94, 95, 97, 98, 100, 101, 103, 104, 
-		105, 107, 108, 110, 111, 113, 114, 116
-		};
+void targettheta (void) {
+	int x,y;
+	double theta;
 	
-	i = targetSpeed;		// 目標値
-	j = Encoder * 10;		// 現在値
-	
-	// デモモードのときゲイン変更
-	if ( demo ) {
-		kp3 = 49;
-		ki3 = 41;
-		kd3 = 0;
+	x= TARGETDISTANCE - enc1;
+	if ( targetmarker == 0xe ) {
+		y = TARGETDISTANCE_E;
+	} else if ( targetmarker == 0xf ) {
+		y = TARGETDISTANCE_F;
 	} else {
-		kp3 = kp3_buff;
-		ki3 = ki3_buff;
-		kd3 = kd3_buff;
+		y = 	TARGETDISTANCE_ABCD;
 	}
 	
-	// 駆動モーター用PWM値計算
-	Dev = i - j;	// 偏差
-	
-	if ( Dev > 50 || Dev < -50) {
-		// 目標値を超えたらI成分リセット
-		if ( Dev >= 0 && AccelefBefore == 1 ) Int3 = 0;
-		else if ( Dev < 0 && AccelefBefore == 0 ) Int3 = 0;
-		
-		// 目標値を変更したらI成分リセット
-		if ( i != targetSpeedBefore ) Int3 = 0;
-		
-		Int3 += (double)Dev * 0.001;		// 積分
-		Dif = Dev - EncoderBefore;		// 微分　dゲイン1/1000倍
-		
-		iP = (int)kp3 * Dev;			// 比例
-		iI = (double)ki3 * Int3;		// 積分
-		iD = (int)kd3 * Dif;			// 微分
-		iRet = iP + iI + iD;
-		iRet = iRet >> 4;
-		
-		// PWMの上限の設定
-		if ( iRet >  100 )	iRet =  100;
-		if ( iRet <  -100 )	iRet = -100;
-	} else {
-		v = rev_voltage[targetSpeed / SPEED_CURRENT];
-		if ( Dev < 0 ) v = -v;
-		iRet = v;
-	}
-	if ( Dev > 0 )	AccelefBefore = 0;
-	else		AccelefBefore = 1;
-	
-	motorPwm = iRet;
-	
-	EncoderBefore = Dev;
-	targetSpeedBefore = i;
+	theta = atan(y/x);
+	SetAngle2 = theta * DEGTOAD;
 }

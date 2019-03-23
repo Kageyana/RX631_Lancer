@@ -19,6 +19,9 @@
 //												//
 //	書き込みアドレス記録領域7	877～886ブロック			//
 //	停止距離保存領域			887～906ブロック			//
+//												//
+//	書き込みアドレス記録領域7	847～856ブロック			//
+//	停止距離保存領域			857～876ブロック			//
 //////////////////////////////////////////////////////////////////////////
 #ifndef E2DATAFLASH_H_
 #define E2DATAFLASH_H_
@@ -68,6 +71,10 @@
 #define STOPMETER_DATA			906		// 速度制御用PIDゲイン保存領域
 #define STOPMETER_STARTAREA	877		// 速度制御用PIDゲイン書き込みアドレス記録領域1
 #define STOPMETER_ENDAREA		886		// 速度制御用PIDゲイン書き込みアドレス記録領域2
+
+#define PID4_DATA			876			// 速度制御用PIDゲイン保存領域
+#define PID4_STARTAREA		847			// 速度制御用PIDゲイン書き込みアドレス記録領域1
+#define PID4_ENDAREA		856			// 速度制御用PIDゲイン書き込みアドレス記録領域2
 //======================================//
 // グローバル変数の宣言                 //
 //======================================//
@@ -98,7 +105,7 @@ void readFlashArray ( unsigned int Addr, volatile short* dataArray, short width_
 void readFlashArray2 ( unsigned int Addr, volatile short* dataArray, short width_data, short limitArea );
 void readBeforeAddr ( short startBlockNumber, short endBlockNumber );
 void writeFlashData ( short startBlockNumber, short endBlockNumber, short endData, short width_data );
-void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pid_angle, bool pid_speed, bool meter);
-void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_angle, bool pid_speed, bool meter );
+void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pid_angle, bool pid_speed, bool pid_angle2, bool meter);
+void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_angle, bool pid_speed, bool pid_angle2, bool meter );
 
 #endif // E2DATAFLASH_H_
