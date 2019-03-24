@@ -138,7 +138,7 @@ void main(void){
 				lcdPosition( 0, 0 );
 				lcdPrintf("mark %x  ", targetmarker);
 				lcdPosition( 0, 1 );
-				lcdPrintf("log %3d", logmeter());
+				lcdPrintf("    %4d",SetAngle2);
 			}
 			// スイッチで停止
 			if ( tasw_get() == 0x4 ) {
@@ -191,6 +191,8 @@ void main(void){
 			break;
 			
 		case 1:
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			if ( start == 1 ) {
 				// カウントダウンスタート
@@ -233,27 +235,14 @@ void main(void){
 		// 【010】トレース処理
 		//-------------------------------------------------------------------
 		case 11:
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
 			i = getServoAngle();
 			led_out( 0x00 );
 			
-			if ( BeforeCurve == 1 ) {
-				if ( targetmarker == 0xf && enc1 >= enc_mm( 3000 ) ) {
-					BeforeCurve = 0;
-					enc1 = 0;
-					setBeepPatternS( 0x8000 );
-					pattern = 12;
-					break;
-				} else if ( targetmarker == 0xd && enc1 >= enc_mm( 1000 ) ) {
-					BeforeCurve = 0;
-					enc1 = 0;
-					setBeepPatternS( 0x8000 );
-					pattern = 12;
-					break;
-				}
-			}
 			// 的マーカーチェック
 			if ( check_rightline() ) {
 				enc1 = 0;
@@ -267,17 +256,20 @@ void main(void){
 				pattern = 22;
 				break;
 			}
+			/*
 			// カーブチェック
 			if ( i >=  CURVE_R600_START || i <= -CURVE_R600_START ) {
 				enc1 = 0;
 				curve_moed = 1;
 				pattern = 12;
 				break;
-			}
+			}*/
 			break;
 			
 		case 12:
 			// カーブブレーキ
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_brake * SPEED_CURRENT;
 			led_out( 0x1e );
@@ -292,38 +284,31 @@ void main(void){
 			
 		case 13:
 			// R600カーブ走行
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
 			diff( motorPwm );
 			i = getServoAngle();
 			
-			// R450チェック
-			if( i >= CURVE_R450_START || i <= -CURVE_R450_START ) {
-				enc1 = 0;
-				pattern = 14;
-				break;
-			}
-			// カーブ継ぎ目チェック
-			if( i <  CURVE_R600_START && i > -CURVE_R600_START && curve_moed == 1 ) {
+			//直線チェック
+			if( i <  CURVE_R600_START && i > -CURVE_R600_START ) {
 				enc1 = 0;
 				curve_moed = 0;
-				pattern = 11;
+				pattern = 14;
 				break;
 			}
 			break;
 			
 		case 14:
-			// R450カーブ走行
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
-			targetSpeed = speed_curve_r450 * SPEED_CURRENT;
+			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
 			diff( motorPwm );
-			i = getServoAngle();
-			
-			// R600チェック
-			if( i < CURVE_R450_START && i > -CURVE_R450_START ) {
+			if( enc1 > enc_mm(200) ) {		// 600mm進む
 				enc1 = 0;
-				curve_moed = 1;
-				pattern = 13;
+				pattern = 11;
 				break;
 			}
 			break;
@@ -331,6 +316,8 @@ void main(void){
 		// 【020】マーカー誤検知処理
 		//-------------------------------------------------------------------
 		case 21:
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -347,12 +334,10 @@ void main(void){
 					targetmarker = 0xf;
 				} else if ( targetmarker == 0xf ) {
 					targetmarker = 0xa;
-					BeforeCurve = 1;
 				} else if ( targetmarker == 0xb ) {
 					targetmarker = 0xc;
 				} else if ( targetmarker == 0xd ) {
 					targetmarker = 0xe;
-					BeforeCurve = 1;
 				} else if ( targetmarker == 0 ) {
 					targetmarker = 0xe;
 				}
@@ -364,6 +349,8 @@ void main(void){
 			break;
 			
 		case 22:
+			SetAngle2 = 0;
+			servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -383,16 +370,23 @@ void main(void){
 				}
 				
 				enc1 = 0;
-				pattern = 31;
+				pattern = 41;
 				break;
 			}
 			break;
 			
 		//-------------------------------------------------------------------
-		// 【030】マークE(平行的)
+		// 【030】右的
 		//-------------------------------------------------------------------
 		case 31:
-			targettheta();
+			//targettheta();
+			if ( targetmarker == 0xe ) {
+				SetAngle2 = 517;
+			} else if ( targetmarker == 0xf ) {
+				SetAngle2 = 596;
+			} else {
+				SetAngle2 = 398;
+			}
 			servoPwmOut( ServoPwm );
 			servoPwmOut2( ServoPwm3 );
 			targetSpeed = speed_straight * SPEED_CURRENT;
@@ -418,38 +412,29 @@ void main(void){
 				}
 				break;
 		//-------------------------------------------------------------------
-		// 【030】マークF(平行的)
+		// 【040】左的
 		//-------------------------------------------------------------------
 		case 41:
+			SetAngle2 = -398;
 			servoPwmOut( ServoPwm );
+			servoPwmOut2( ServoPwm3 );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
-			if ( enc1 > enc_mm( 500 ) ) {
+			// 500mm進む
+			if ( enc1 > enc_mm( 600 ) ) {
+				enc1 = 0;
 				pattern = 32;
 				break;
 			}
 			break;
 			
 		case 42:
-				SetAngle2 = 300;
-				servoPwmOut2( ServoPwm3 );
-				servoPwmOut( ServoPwm );
-				targetSpeed = speed_straight * SPEED_CURRENT;
-				diff( motorPwm );
-				if ( enc1 > enc_mm( 200 ) ) {
-					enc1 = 0;
-					pattern = 33;
-					break;
-				}
-				break;
-				
-		case 43:
 				SetAngle2 = 0;
 				servoPwmOut2( ServoPwm3 );
 				servoPwmOut( ServoPwm );
 				targetSpeed = speed_straight * SPEED_CURRENT;
 				diff( motorPwm );
-				if ( enc1 > enc_mm( 100 ) ) {
+				if ( enc1 > enc_mm( 200 ) ) {
 					enc1 = 0;
 					pattern = 11;
 					break;
@@ -466,6 +451,7 @@ void main(void){
 			
 		case 102:
 			servoPwmOut( ServoPwm );
+			servoPwmOut2( 0 );
 			targetSpeed = 0;
 			( motorPwm, motorPwm );
 			motor_r( motorPwm, motorPwm );

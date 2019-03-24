@@ -517,15 +517,15 @@ void servoPwmOut2( signed char servopwm )
 	
 	// サーボリミット制御
 	angle = getServoAngle2();
-	
+	/*
 	// 角度によるリミット制御
-	if ( angle >= SERVO_LIMIT2 ) servopwm = -15;
-	if ( angle <= -SERVO_LIMIT2 ) servopwm = 15;
+	if ( angle >= SERVO_LIMIT2 ) servopwm = -30;
+	if ( angle <= -SERVO_LIMIT2 ) servopwm = 30;
 	
 	// ポテンションメーターが外れていたら制御しない
 	if ( angle > SERVO_LIMIT2 + 100 ) servopwm = 0;
 	if ( angle < -SERVO_LIMIT2 - 100 ) servopwm = 0;
-
+*/
 	pwm = (uint16_t)TGR_SERVO * servopwm / 100;
 	// サーボモータ制御
 	if( servopwm > 0) {				

@@ -341,8 +341,8 @@ void servoControl3( void )
 	iRet = iRet >> 4;		// PWMを0～100の間に収める
 
 	// PWMの上限の設定(安定したら70程度に)
-	if ( iRet >  90 ) iRet =  90;		// マイコンカーが安定したら
-	if ( iRet <  -90 ) iRet = -90;	// 上限を90くらいにしてください
+	if ( iRet >  50 ) iRet =  50;		// マイコンカーが安定したら
+	if ( iRet <  -50 ) iRet = -50;	// 上限を90くらいにしてください
 	
 	SetAngleBefore2 = i;
 	ServoPwm3 = iRet;
@@ -780,6 +780,6 @@ void targettheta (void) {
 		y = 	TARGETDISTANCE_ABCD;
 	}
 	
-	theta = atan(y/x);
+	theta = atan(y/x) * (180/PI);
 	SetAngle2 = theta * DEGTOAD;
 }

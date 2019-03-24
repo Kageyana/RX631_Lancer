@@ -980,13 +980,13 @@ void sendLog (void) {
 		send_Char			(	sensor_inp() 	);
 		send_Char			( 	slope_mode	);
 		send_Char			(	(char)Encoder		);
-		send_Char			(	sPwm		);
-		send_Char			(	(char)PichAngleIMU*10	);
+		send_Char			(	sPwm	);
+		send_Char			(	sPwm2	);
 		send_Char			(	(char)RollAngleIMU*10	);
 		
 		send_ShortToChar	(	(short)TurningAngleIMU*10	);
-		send_ShortToChar	(	rawXg		);
-		send_ShortToChar	(	rawYg		);
+		send_ShortToChar	(	getServoAngle2()		);
+		send_ShortToChar	(	SetAngle2		);
 		send_ShortToChar	(	rawZg		);
 		send_ShortToChar	(	getServoAngle()	);
 		send_ShortToChar	(	SetAngle		);
@@ -1036,12 +1036,12 @@ void msd_sendToPC ( void )
 				printf(	"slope_mode,"		);
 				printf(	"Encoder,"			);
 				printf(	"sPwm,"		);
-				printf(	"PichAngleIMU,"		);
+				printf(	"sPwm2,"		);
 				printf(	"RollAngleIMU,"		);
 				
 				printf(	"TurningAngleIMU,"	);
-				printf(	"xg[degrees/sec],"	);
-				printf(	"yg[degrees/sec],"	);
+				printf(	"getServoAngle2,"	);
+				printf(	"SetAngle2,"	);
 				printf(	"zg[degrees/sec],"	);
 				printf(	"getServoAngle,"	);
 				printf(	"SetAngle,"		);
@@ -1091,13 +1091,13 @@ void msd_sendToPC ( void )
 				printf("%5d,", msdBuff[ msdBuffaddress + 2 ]);	// sensor_inp()
 				printf("%5d,", msdBuff[ msdBuffaddress + 3 ]);	// slope_mode
 				printf("%5d,", msdBuff[ msdBuffaddress + 4 ]);	// Encoder
-				printf("%5d,", msdBuff[ msdBuffaddress + 5 ]);	// targetSpeed
-				printf("%5d,", msdBuff[ msdBuffaddress + 6 ]/10);	// PichAngleIMU
+				printf("%5d,", msdBuff[ msdBuffaddress + 5 ]);	// sPwm
+				printf("%5d,", msdBuff[ msdBuffaddress + 6 ]);	// sPwm2
 				printf("%5d,", msdBuff[ msdBuffaddress + 7 ]/10);	// RollAngleIMU
 				
 				printf("%4.2f,", (double)CharToShort(8)/10);	// TurningAngleIMU
-				printf("%4.4f,", (double)CharToShort(10) / GYROLSB);// xg
-				printf("%4.4f,", (double)CharToShort(12) / GYROLSB);// yg
+				printf("%5d,", CharToShort(10));// getServoAngle2
+				printf("%5d,", CharToShort(12));// SetAngle2
 				printf("%4.4f,", (double)CharToShort(14) / GYROLSB);// zg
 				printf("%5d,", CharToShort(16));				// getServoAngle()
 				printf("%5d,", CharToShort(18));				// SetAngle

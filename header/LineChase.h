@@ -69,9 +69,9 @@
 
 // PIDゲイン関連
 //白線トレース
-#define KP			28
-#define KI			16
-#define KD		99
+#define KP			20
+#define KI			3
+#define KD		58
 
 // 角度制御
 #define KP2		9
@@ -90,7 +90,7 @@
 
 // 緊急停止関連
 #define STOP_SENSOR1		60		// センサ全灯
-#define STOP_SENSOR2		800		// センサ全消灯
+#define STOP_SENSOR2		100		// センサ全消灯
 #define STOP_ENCODER		10		// エンコーダ停止(ひっくり返った？)
 #define STOP_GYRO			100		// マイナスの加速度検知(コースから落ちた？)
 #define STOP_COUNT		10000	// 時間停止
