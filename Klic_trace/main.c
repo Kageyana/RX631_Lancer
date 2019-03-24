@@ -108,10 +108,10 @@ void main(void){
 						pattern = 101;
 					} else if ( cnt_out >= STOP_SENSOR1 ) {	// センサ全灯
 						error_mode = 1;
-						pattern = 101;
+						//pattern = 101;
 					} else if ( cnt_out2 >= STOP_SENSOR2 ) {	// センサ全消灯
 						error_mode = 2;
-						pattern = 101;
+						//pattern = 101;
 					} else if ( cnt_out3 >= STOP_ENCODER ) {	// エンコーダ停止(ひっくり返った？)
 						error_mode = 3;
 						pattern = 101;
@@ -126,12 +126,13 @@ void main(void){
 						pattern = 101;
 					}
 					*/
-					/*
+					
 					// 一定時間で停止
 					if( cnt1 >= STOP_COUNT ) {
+						error_mode = 6;
 						pattern = 101;
 					}
-					*/
+					
 				}
 			} else {			
 				// 手押しモードON
@@ -162,7 +163,7 @@ void main(void){
 			setup();
 			if ( start && !pushcart_mode ) {
 				demo = 0;		// デモモード解除
-				angle_mode = 0;	// 白線トレース
+				//angle_mode = 0;	// 白線トレース
 				Int = 0;			// 積分リセット
 				txt= txt_data;		// 受信配列リセット
 				cnt_byte = 0;		// 受信カウントリセット
@@ -198,7 +199,7 @@ void main(void){
 				// カウントダウンスタート
 				if ( cnt1 >= 3000 ) {
 					setBeepPatternS( 0xfff0 );
-					
+					angle_mode = 1;
 					// 変数初期化
 					init_Parameter( 0 );
 					break;
@@ -237,7 +238,8 @@ void main(void){
 		case 11:
 			SetAngle2 = 0;
 			servoPwmOut2( ServoPwm3 );
-			servoPwmOut( ServoPwm );
+			SetAngle = 0;
+			servoPwmOut( ServoPwm2 );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
 			i = getServoAngle();
@@ -256,6 +258,17 @@ void main(void){
 				pattern = 22;
 				break;
 			}
+			if ( targetmarker == 0xf && enc1 >= enc_mm( 2740 ) ) {
+				TurningAngleIMU = 0;
+				pattern = 12;
+				break;
+			}
+			
+			if ( targetmarker == 0xd && enc1 >= enc_mm( 140 ) ) {
+				TurningAngleIMU = 0;
+				pattern = 12;
+				break;
+			}
 			/*
 			// カーブチェック
 			if ( i >=  CURVE_R600_START || i <= -CURVE_R600_START ) {
@@ -270,12 +283,13 @@ void main(void){
 			// カーブブレーキ
 			SetAngle2 = 0;
 			servoPwmOut2( ServoPwm3 );
-			servoPwmOut( ServoPwm );
+			SetAngle = 260;
+			servoPwmOut( ServoPwm2 );
 			targetSpeed = speed_curve_brake * SPEED_CURRENT;
 			led_out( 0x1e );
 			diff( motorPwm );
 			
-			if( enc1 > enc_mm(400) ) {		// 600mm進む
+			if( TurningAngleIMU >= 178 ) {		// 600mm進む
 				enc1 = 0;
 				pattern = 13;
 				break;
@@ -286,16 +300,17 @@ void main(void){
 			// R600カーブ走行
 			SetAngle2 = 0;
 			servoPwmOut2( ServoPwm3 );
-			servoPwmOut( ServoPwm );
+			SetAngle = 0;
+			servoPwmOut( ServoPwm2 );
 			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
 			diff( motorPwm );
 			i = getServoAngle();
 			
 			//直線チェック
-			if( i <  CURVE_R600_START && i > -CURVE_R600_START ) {
+			if( enc1 > enc_mm(200)  ) {
 				enc1 = 0;
 				curve_moed = 0;
-				pattern = 14;
+				pattern = 12;
 				break;
 			}
 			break;

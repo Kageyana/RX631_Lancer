@@ -85,8 +85,12 @@ void setup( void )
 			//0x8を押すと白線追従
 			angle_mode = 0;
 			data_select( &servo_test, 8 );
-			if ( servo_test == 1 ) servoPwmOut( ServoPwm );
-			else servoPwmOut( 0 );
+			if ( servo_test == 1 ) {
+				angle_mode = 1;
+				servoPwmOut( ServoPwm2 );
+			} else {
+				servoPwmOut( 0 );
+			}
 			
 			// プッシュスイッチ押下待ち
 			if ( tasw_get() == 0x1 ) start = 2;
