@@ -66,6 +66,10 @@
 #define DIR_FR_FOR		R_PG_IO_PORT_Write_PB4( 0 );
 #define DIR_FR_REV		R_PG_IO_PORT_Write_PB4( 1 );
 #define PWM_FR_OUT	R_PG_Timer_SetTGR_B_MTU_U0_C0( pwmfr );
+// 左前輪
+#define DIR_FL_FOR		R_PG_IO_PORT_Write_PB2( 0 );		// モータ回転方向(正転)
+#define DIR_FL_REV		R_PG_IO_PORT_Write_PB2( 1 );		// モータ回転方向(正転)
+#define PWM_FL_OUT	R_PG_Timer_SetTGR_D_MTU_U0_C0( pwmfl );	// PWM出力
 // 左後輪
 #define DIR_RL_FOR		R_PG_IO_PORT_Write_P20( 0 );
 #define DIR_RL_REV		R_PG_IO_PORT_Write_P20( 1 );
@@ -78,10 +82,6 @@
 #define DIR_SERVO_FOR	R_PG_IO_PORT_Write_PB6( 0 );
 #define DIR_SERVO_REV	R_PG_IO_PORT_Write_PB6( 1 );
 #define PWM_SERVO_OUT	R_PG_Timer_SetTGR_B_MTU_U0_C2( pwm );
-// 槍サーボ
-#define DIR_SERVO2_FOR	R_PG_IO_PORT_Write_PB2( 0 );		// モータ回転方向(正転)
-#define DIR_SERVO2_REV	R_PG_IO_PORT_Write_PB2( 1 );		// モータ回転方向(正転)
-#define PWM_SERVO2_OUT	R_PG_Timer_SetTGR_D_MTU_U0_C0( pwm );	// PWM出力
 
 /******************************************************************************************/
 
@@ -153,7 +153,7 @@ void motor_r( signed char accelerL, signed char accelerR );
 
 // サーボ関連
 void servoPwmOut( signed char servopwm );
-void servoPwmOut2( signed char servopwm );
+//void servoPwmOut2( signed char servopwm );
 
 // 比較関連
 int short_sort( const void* a, const void* b );

@@ -60,7 +60,7 @@ void main(void){
 	
 	motor_r( 0, 0 );
 	servoPwmOut( 0 );
-	servoPwmOut2( 0 );
+	//servoPwmOut2( 0 );
 	
 	pushcart_mode = 0;		// 手押しモードoff
 	slope_mode = 0;		// 上り坂チェック
@@ -192,7 +192,7 @@ void main(void){
 			
 		case 1:
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			if ( start == 1 ) {
 				// カウントダウンスタート
@@ -236,7 +236,7 @@ void main(void){
 		//-------------------------------------------------------------------
 		case 11:
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -269,7 +269,7 @@ void main(void){
 		case 12:
 			// カーブブレーキ
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_brake * SPEED_CURRENT;
 			led_out( 0x1e );
@@ -285,7 +285,7 @@ void main(void){
 		case 13:
 			// R600カーブ走行
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
 			diff( motorPwm );
@@ -302,7 +302,7 @@ void main(void){
 			
 		case 14:
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
 			diff( motorPwm );
@@ -317,7 +317,7 @@ void main(void){
 		//-------------------------------------------------------------------
 		case 21:
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -350,7 +350,7 @@ void main(void){
 			
 		case 22:
 			SetAngle2 = 0;
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -388,7 +388,7 @@ void main(void){
 				SetAngle2 = 398;
 			}
 			servoPwmOut( ServoPwm );
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
 			// 500mm進む
@@ -401,7 +401,7 @@ void main(void){
 			
 		case 32:
 				SetAngle2 = 0;
-				servoPwmOut2( ServoPwm3 );
+				//servoPwmOut2( ServoPwm3 );
 				servoPwmOut( ServoPwm );
 				targetSpeed = speed_straight * SPEED_CURRENT;
 				diff( motorPwm );
@@ -417,7 +417,7 @@ void main(void){
 		case 41:
 			SetAngle2 = -398;
 			servoPwmOut( ServoPwm );
-			servoPwmOut2( ServoPwm3 );
+			//servoPwmOut2( ServoPwm3 );
 			targetSpeed = speed_straight * SPEED_CURRENT;
 			diff( motorPwm );
 			// 500mm進む
@@ -430,7 +430,7 @@ void main(void){
 			
 		case 42:
 				SetAngle2 = 0;
-				servoPwmOut2( ServoPwm3 );
+				//servoPwmOut2( ServoPwm3 );
 				servoPwmOut( ServoPwm );
 				targetSpeed = speed_straight * SPEED_CURRENT;
 				diff( motorPwm );
@@ -451,7 +451,7 @@ void main(void){
 			
 		case 102:
 			servoPwmOut( ServoPwm );
-			servoPwmOut2( 0 );
+			//servoPwmOut2( 0 );
 			targetSpeed = 0;
 			( motorPwm, motorPwm );
 			motor_r( motorPwm, motorPwm );

@@ -351,7 +351,6 @@ void beepProcessS( void )
 // 引数         accelefL, accelefR(PWMを1～100%で指定)			//
 // 戻り値       なし									//
 ///////////////////////////////////////////////////////////////////////////
-/*
 void motor_f( signed char accelefL, signed char accelefR )
 {
 	uint16_t pwmfl, pwmfr;
@@ -404,7 +403,7 @@ void motor_f( signed char accelefL, signed char accelefR )
 		DIR_FR_REV
 		PWM_FR_OUT
 	}
-}*/
+}
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 motor_r								//
 // 処理概要     モーターのPWMの変更						//
@@ -508,6 +507,7 @@ void servoPwmOut( signed char servopwm )
 // 引数         spwm									//
 // 戻り値       なし									//
 ///////////////////////////////////////////////////////////////////////////
+/*
 void servoPwmOut2( signed char servopwm )
 {
 	uint16_t pwm;
@@ -517,15 +517,6 @@ void servoPwmOut2( signed char servopwm )
 	
 	// サーボリミット制御
 	angle = getServoAngle2();
-	/*
-	// 角度によるリミット制御
-	if ( angle >= SERVO_LIMIT2 ) servopwm = -30;
-	if ( angle <= -SERVO_LIMIT2 ) servopwm = 30;
-	
-	// ポテンションメーターが外れていたら制御しない
-	if ( angle > SERVO_LIMIT2 + 100 ) servopwm = 0;
-	if ( angle < -SERVO_LIMIT2 - 100 ) servopwm = 0;
-*/
 	pwm = (uint16_t)TGR_SERVO * servopwm / 100;
 	// サーボモータ制御
 	if( servopwm > 0) {				
@@ -539,6 +530,7 @@ void servoPwmOut2( signed char servopwm )
 		PWM_SERVO2_OUT
 	}
 }
+*/
 ///////////////////////////////////////////////////////////////////////////
 // モジュール名 short_sort								//
 // 処理概要     short型変数の比較をする						//

@@ -354,7 +354,7 @@ void setup( void )
 		case 0x7:
 			lcdPosition( 0, 0 );
 			lcdPrintf("kp ki kd");
-			
+			/*
 			data_select( &servo_test2, 8 );
 			if ( servo_test == 1 ) servoPwmOut2( ServoPwm3 );
 			else servoPwmOut2( 0 );
@@ -407,7 +407,7 @@ void setup( void )
 					
 					data_tuning ( &kd4_buff, 1, RIGHT );
 					break;
-			}
+			}*/
 			break;
 		//------------------------------------------------------------------
 		// y0x8z1m/s‚Å‚Ìƒpƒ‰ƒ[ƒ^
