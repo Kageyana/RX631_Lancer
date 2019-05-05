@@ -12,7 +12,7 @@
 #define SERVO_LIMIT2		700		// 槍サーボリミットAD値±
 #define SERVO_CENTER2		2058		// サーボセンターのAD値
 #define TGR_MOTOR			4798		// ジェネラルレジスタ初期値(駆動モータ)
-#define TGR_SERVO			2879		// ジェネラルレジスタ初期値(サーボ)
+#define TGR_SERVO			1198		// ジェネラルレジスタ初期値(サーボ)
 #define PALSE_METER		24750	// 1mのパルス
 #define PALSE_MILLIMETER	24.75F	// 1mmのパルス
 #define SPEED_CURRENT		25		// 1m/sの時　1msのパルス

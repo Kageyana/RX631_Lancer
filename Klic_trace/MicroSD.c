@@ -1029,7 +1029,7 @@ void msd_sendToPC ( void )
 			case 1:
 				i = 0;
 				// タイトル
-				printf(	"Time[ms],"		);
+				/*printf(	"Time[ms],"		);
 				printf(	"pattern,"			);
 				printf(	"MotorPwm,"		);
 				printf(	"sensor_inp(),"		);
@@ -1050,7 +1050,7 @@ void msd_sendToPC ( void )
 				printf(	"EncoderTotal,"		);
 				printf(	"enc1,"			);
 				printf(	"cnt_log[ms]"		);
-				printf("\n");
+				printf("\n");*/
 				
 				msdEndaddress = msdWorkaddress2;	// 読み込み終了アドレス
 				msdWorkaddress = msdWorkaddress;	// 読み込み開始アドレス
@@ -1062,7 +1062,7 @@ void msd_sendToPC ( void )
 				// microSDよりデータ読み込み
 				if( msdWorkaddress >= msdEndaddress ) {
 					// 書き込み終了アドレスになったら、終わり
-					printf( "End.\n" );
+					//printf( "End.\n" );
 					setBeepPatternS( 0xa8a8 );
 					pattern_send = 4;
 					break;
