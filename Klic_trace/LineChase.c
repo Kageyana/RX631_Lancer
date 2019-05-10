@@ -25,30 +25,8 @@ short	speed_curve_r600;		// R600カーブ速度
 short	speed_curve_r450;		// R450カーブ速度
 short	speed_curve_straight;	// S字カーブ直線速度
 
-short	speed_crossline;			// クロスライン進入速度
-short	speed_ckank_trace;		// クランク進入速度
-short	speed_rightclank_curve;	// 右クランク旋回速度
-short	speed_rightclank_escape;	// 右クランク復帰速度
-short	speed_leftclank_curve;	// 左クランク旋回速度
-short	speed_leftclank_escape;	// 左クランク復帰速度
-
-short	speed_halfine;			// ハーフライン進入速度
-short	speed_rightchange_trace;	// 右レーンチェンジ進入速度
-short	speed_rightchange_curve;	// 右レーンチェンジ旋回速度
-short	speed_rightchange_escape;// 右レーンチェンジ復帰速度
-
-short	speed_leftchange_trace;	// 左レーンチェンジ進入速度
-short	speed_leftchange_curve;	// 左レーンチェンジ旋回速度
-short	speed_leftchange_escape;	// 左レーンチェンジ旋回速度
-
-short	speed_slope_brake;		// 下り坂終点速度
-short	speed_slope_trace;		// 坂読み飛ばし速度
-
-// サーボ角度
-short	angle_rightclank;		// 右クランク旋回角度
-short	angle_leftclank;			// 左クランク旋回角度
-short	angle_rightchange;		// 右レーンチェンジ旋回角度
-short	angle_leftchange;		// 右レーンチェンジ旋回角度
+short enc_buforecurve;		// カーブ前の減速区間
+short enc_aftercurve;			// カーブ後の安定区間
 
 // タイマ関連
 short			cnt_gyro;			// 角度計算用カウンタ

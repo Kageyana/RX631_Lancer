@@ -11,37 +11,17 @@
 // シンボル定義									//
 //====================================//
 // 緊急停止
-#define	STOPPING_METER		40		// 停止距離
+#define	STOPPING_METER		20		// 停止距離
 
 // 各セクションでの目標速度　x/10[m/s]
 #define SPEED_STRAIGHT			54	// 通常トレース
-#define SPEED_CURVE_BRAKE		30	// カーブブレーキ
-#define SPEED_CURVE_R600		46	// R600カーブ速度
-#define SPEED_CURVE_R450		40	// R450カーブ速度
-#define SPEED_CURVE_STRAIGHT	42	// S字カーブ直線速度
+#define SPEED_CURVE_BRAKE		20	// カーブブレーキ
+#define SPEED_CURVE_R600		38	// R600カーブ速度
+#define SPEED_CURVE_R450		34	// R450カーブ速度
+#define SPEED_CURVE_STRAIGHT	44	// S字カーブ直線速度
 
-#define SPEED_CROSSLINE			28	// クロスライン進入速度
-#define SPEED_CLANK_TRACE			32	// クランク進入速度
-#define SPEED_RIGHTCLANK_CURVE		22	// 右クランク旋回速度
-#define SPEED_RIGHTCLANK_ESCAPE		40	// 右クランク復帰速度
-#define SPEED_LEFTCLANK_CURVE		22	// 左クランク旋回速度
-#define SPEED_LEFTCLANK_ESCAPE		40	// 左クランク復帰速度
-
-#define SPEED_HALFLINE				30	// ハーフライン進入速度
-#define SPEED_RIGHTCHANGE_TRACE	46	// 右レーンチェンジ進入速度
-#define SPEED_RIGHTCHANGE_CURVE	46	// 右レーンチェンジ旋回速度
-#define SPEED_RIGHTCHANGE_ESCAPE	46	// 右レーンチェンジ復帰速度
-#define SPEED_LEFTCHANGE_TRACE		46	// 左レーンチェンジ進入速度
-#define SPEED_LEFTCHANGE_CURVE		46	// 左レーンチェンジ旋回速度
-#define SPEED_LEFTCHANGE_ESCAPE		46	// 左レーンチェンジ復帰速度
-
-#define SPEED_SLOPE_BRAKE		26	// 下り坂終点速度
-#define SPEED_SLOPE_TRACE		36	// 坂読み飛ばし速度
-// 角度
-#define ANGLE_RIGHTCLANK		-420	// 右クランク旋回角度
-#define ANGLE_LEFTCLANK		420	// 左クランク旋回角度
-#define ANGLE_RIGHTCHANGE		-160	// 右レーンチェンジ旋回角度
-#define ANGLE_LEFTCHANGE		160	// 右レーンチェンジ旋回角度
+#define ENC_BEFORECURVE 		600	// カーブ前の減速区間
+#define ENC_AFTERCURVE 		600	// カーブ後の安定区間
 
 // カーブ関連
 #define CURVE_R600_START	20		// R600開始AD値
@@ -119,24 +99,8 @@ extern short	speed_curve_r600;		// R600カーブ速度
 extern short	speed_curve_r450;		// R450カーブ速度
 extern short	speed_curve_straight;	// S字カーブ直線速度
 
-extern short	speed_crossline;			// クロスライン進入速度
-extern short	speed_ckank_trace;		// クランク進入速度
-extern short	speed_rightclank_curve;	// 右クランク旋回速度
-extern short	speed_rightclank_escape;	// 右クランク復帰速度
-extern short	speed_leftclank_curve;	// 左クランク旋回速度
-extern short	speed_leftclank_escape;	// 左クランク復帰速度
-
-extern short	speed_halfine;			// ハーフライン進入速度
-extern short	speed_rightchange_trace;	// 右レーンチェンジ進入速度
-extern short	speed_rightchange_curve;	// 右レーンチェンジ旋回速度
-extern short	speed_rightchange_escape;// 右レーンチェンジ復帰速度
-
-extern short	speed_leftchange_trace;	// 左レーンチェンジ進入速度
-extern short	speed_leftchange_curve;	// 左レーンチェンジ旋回速度
-extern short	speed_leftchange_escape;	// 左レーンチェンジ旋回速度
-
-extern short	speed_slope_brake;		// 下り坂終点速度
-extern short	speed_slope_trace;		// 坂読み飛ばし速度
+extern short 	enc_buforecurve;		// カーブ前の減速区間
+extern short	enc_aftercurve;			// カーブ後の安定区間
 
 // サーボ角度
 extern short	angle_rightclank;		// 右クランク旋回角度

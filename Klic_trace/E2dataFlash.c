@@ -657,28 +657,8 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 			speed_curve_r450	= flashDataBuff[ 3 ];
 			speed_curve_straight	= flashDataBuff[ 4 ];
 			
-			speed_crossline		= flashDataBuff[ 5 ];
-			speed_ckank_trace	= flashDataBuff[ 6 ];
-			speed_rightclank_curve	= flashDataBuff[ 7 ];
-			speed_rightclank_escape	= flashDataBuff[ 8 ];
-			speed_leftclank_curve	= flashDataBuff[ 9 ];
-			speed_leftclank_escape	= flashDataBuff[ 10 ];
-			
-			speed_halfine		= flashDataBuff[ 11 ];
-			speed_rightchange_trace = flashDataBuff[ 12 ];
-			speed_rightchange_curve	= flashDataBuff[ 13 ];
-			speed_rightchange_escape= flashDataBuff[ 14 ];
-			speed_leftchange_trace 	= flashDataBuff[ 15 ];
-			speed_leftchange_curve	= flashDataBuff[ 16 ];
-			speed_leftchange_escape	= flashDataBuff[ 17  ];
-			
-			speed_slope_brake	= flashDataBuff[ 18 ];
-			speed_slope_trace	= flashDataBuff[ 19 ];
-					
-			angle_rightclank	= flashDataBuff[ 20 ];
-			angle_leftclank		= flashDataBuff[ 21 ];
-			angle_rightchange	= flashDataBuff[ 22 ];
-			angle_leftchange	= flashDataBuff[ 23 ];
+			enc_buforecurve  	= flashDataBuff[ 5 ];
+			enc_aftercurve  		= flashDataBuff[ 6 ];
 		
 		} else if ( checkBlank( ( PARAMETER_STARTAREA *32 ) + FLASHSTARTADDR ) <= 0 ) {
 			// 全ブロックイレーズまたはエラーが発生したら初期値に設定する
@@ -688,28 +668,8 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 			speed_curve_r450	= SPEED_CURVE_R450;
 			speed_curve_straight	= SPEED_CURVE_STRAIGHT;
 			
-			speed_crossline		= SPEED_CROSSLINE;
-			speed_ckank_trace	= SPEED_CLANK_TRACE;
-			speed_rightclank_curve	= SPEED_RIGHTCLANK_CURVE;
-			speed_rightclank_escape	= SPEED_RIGHTCLANK_ESCAPE;
-			speed_leftclank_curve	= SPEED_LEFTCLANK_CURVE;
-			speed_leftclank_escape	= SPEED_LEFTCLANK_ESCAPE;
-			
-			speed_halfine		= SPEED_HALFLINE;
-			speed_rightchange_trace = SPEED_RIGHTCHANGE_TRACE;
-			speed_rightchange_curve	= SPEED_RIGHTCHANGE_CURVE;
-			speed_rightchange_escape= SPEED_RIGHTCHANGE_ESCAPE;
-			speed_leftchange_trace 	= SPEED_LEFTCHANGE_TRACE;
-			speed_leftchange_curve	= SPEED_LEFTCHANGE_CURVE;
-			speed_leftchange_escape	= SPEED_LEFTCHANGE_ESCAPE;
-			
-			speed_slope_brake	= SPEED_SLOPE_BRAKE;
-			speed_slope_trace	= SPEED_SLOPE_TRACE;
-			
-			angle_rightclank	= ANGLE_RIGHTCLANK;
-			angle_leftclank		= ANGLE_LEFTCLANK;
-			angle_rightchange	= ANGLE_RIGHTCHANGE;
-			angle_leftchange	= ANGLE_LEFTCHANGE;
+			enc_buforecurve  	= ENC_BEFORECURVE;
+			enc_aftercurve  		= ENC_AFTERCURVE;
 			
 			printf("Parameter Initialize\n");
 		}
@@ -881,28 +841,8 @@ void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_a
 		flashDataBuff[ 3 ] = speed_curve_r450;
 		flashDataBuff[ 4 ] = speed_curve_straight;
 		
-		flashDataBuff[ 5 ] = speed_crossline;
-		flashDataBuff[ 6 ] = speed_ckank_trace;
-		flashDataBuff[ 7 ] = speed_rightclank_curve;
-		flashDataBuff[ 8 ] = speed_rightclank_escape;
-		flashDataBuff[ 9 ] = speed_leftclank_curve;
-		flashDataBuff[ 10 ] = speed_leftclank_escape;
-		
-		flashDataBuff[ 11 ] = speed_halfine;
-		flashDataBuff[ 12 ] = speed_rightchange_trace;
-		flashDataBuff[ 13 ] = speed_rightchange_curve;
-		flashDataBuff[ 14 ] = speed_rightchange_escape;
-		flashDataBuff[ 15 ] = speed_leftchange_trace;
-		flashDataBuff[ 16 ] = speed_leftchange_curve;
-		flashDataBuff[ 17 ] = speed_leftchange_escape;
-		
-		flashDataBuff[ 18 ] = speed_slope_brake;
-		flashDataBuff[ 19 ] = speed_slope_trace;
-		
-		flashDataBuff[ 20 ] = angle_rightclank;
-		flashDataBuff[ 21 ] = angle_leftclank;
-		flashDataBuff[ 22 ] = angle_rightchange;
-		flashDataBuff[ 23 ] = angle_leftchange;
+		flashDataBuff[ 5 ] = enc_buforecurve;
+		flashDataBuff[ 6 ] = enc_aftercurve;
 		
 		writeFlashData( PARAMETER_STARTAREA, PARAMETER_ENDAREA, PARAMETER_AREA, NUMDATA );
 	}

@@ -282,7 +282,7 @@ void main(void){
 			led_out( 0x1e );
 			diff( motorPwm );
 			
-			if( enc1 > enc_mm(400) ) {		// 600mm進む
+			if( enc1 > enc_mm(enc_buforecurve) ) {		// 600mm進む
 				enc1 = 0;
 				pattern = 13;
 				break;
@@ -313,7 +313,7 @@ void main(void){
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_straight * SPEED_CURRENT;
 			diff( motorPwm );
-			if( enc1 > enc_mm(600) ) {		// 600mm進む
+			if( enc1 > enc_mm(enc_aftercurve) ) {		// 600mm進む
 				enc1 = 0;
 				pattern = 11;
 				break;

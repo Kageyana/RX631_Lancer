@@ -121,8 +121,8 @@ void setup( void )
 		case 0x3:
 			data_tuning ( &pattern_parameter, 1, LEFT );
 			
-			if ( pattern_parameter == 6 ) pattern_parameter = 1;
-			else if ( pattern_parameter == 0 ) pattern_parameter = 5;
+			if ( pattern_parameter == 8 ) pattern_parameter = 1;
+			else if ( pattern_parameter == 0 ) pattern_parameter = 7;
 			
 			switch( pattern_parameter ) {
 				case 1:
@@ -132,7 +132,7 @@ void setup( void )
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %3gm/s", (double)speed_straight / 10 );
 					
-					data_tuning ( &speed_straight, 2, RIGHT );
+					data_tuning ( &speed_straight, 1, RIGHT );
 					break;
 				case 2:
 					// カーブブレーキ
@@ -141,7 +141,7 @@ void setup( void )
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %3gm/s", (double)speed_curve_brake / 10 );
 					
-					data_tuning ( &speed_curve_brake, 2, RIGHT );
+					data_tuning ( &speed_curve_brake, 1, RIGHT );
 					break;
 				case 3:
 					// R600カーブ走行速度
@@ -150,7 +150,7 @@ void setup( void )
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %3gm/s", (double)speed_curve_r600 / 10  );
 					
-					data_tuning ( &speed_curve_r600, 2, RIGHT );
+					data_tuning ( &speed_curve_r600, 1, RIGHT );
 					break;
 				case 4:
 					// R450カーブ走行速度
@@ -159,7 +159,7 @@ void setup( void )
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %3gm/s", (double)speed_curve_r450 / 10 );
 					
-					data_tuning ( &speed_curve_r450, 2, RIGHT );
+					data_tuning ( &speed_curve_r450, 1, RIGHT );
 					break;
 				case 5:
 					// S字カーブ直線速度
@@ -168,7 +168,27 @@ void setup( void )
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %3gm/s", (double)speed_curve_straight / 10 );
 					
-					data_tuning ( &speed_curve_straight, 2, RIGHT );
+					data_tuning ( &speed_curve_straight, 1, RIGHT );
+					break;
+					
+				case 6:
+					// S字カーブ直線速度
+					lcdPosition( 0, 0 );
+					lcdPrintf("CURVE_BE");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %4dmm", enc_buforecurve );
+					
+					data_tuning ( &enc_buforecurve, 1, RIGHT );
+					break;
+					
+				case 7:
+					// S字カーブ直線速度
+					lcdPosition( 0, 0 );
+					lcdPrintf("CURVE_AF");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %4dmm", enc_aftercurve );
+					
+					data_tuning ( &enc_aftercurve, 1, RIGHT );
 					break;
 			}
 			break;
@@ -1084,24 +1104,6 @@ char fix_speedsetting ( void )
 		speed_curve_r450	= 10;
 		speed_curve_straight	= 10;
 		
-		speed_crossline		= 10;
-		speed_ckank_trace	= 10;
-		speed_rightclank_curve	= 10;
-		speed_rightclank_escape	= 10;
-		speed_leftclank_curve	= 10;
-		speed_leftclank_escape	= 10;
-		
-		speed_halfine		= 10;
-		speed_rightchange_trace = 10;
-		speed_rightchange_curve	= 10;
-		speed_rightchange_escape= 10;
-		speed_leftchange_trace 	= 10;
-		speed_leftchange_curve	= 10;
-		speed_leftchange_escape	= 10;
-		
-		speed_slope_brake	= 10;
-		speed_slope_trace	= 10;
-		
 		fixSpeed = 1;
 		ret = 1;
 	} else if ( setting_2meter == 1 ) {
@@ -1111,24 +1113,6 @@ char fix_speedsetting ( void )
 		speed_curve_r450	= 20;
 		speed_curve_straight	= 20;
 		
-		speed_crossline		= 20;
-		speed_ckank_trace	= 20;
-		speed_rightclank_curve	= 20;
-		speed_rightclank_escape	= 20;
-		speed_leftclank_curve	= 20;
-		speed_leftclank_escape	= 20;
-		
-		speed_halfine		= 20;
-		speed_rightchange_trace = 20;
-		speed_rightchange_curve	= 20;
-		speed_rightchange_escape= 20;
-		speed_leftchange_trace 	= 20;
-		speed_leftchange_curve	= 20;
-		speed_leftchange_escape	= 20;
-		
-		speed_slope_brake	= 20;
-		speed_slope_trace	= 20;
-		
 		fixSpeed = 1;
 		ret = 1;
 	} else if ( setting_3meter == 1 ) {
@@ -1137,24 +1121,6 @@ char fix_speedsetting ( void )
 		speed_curve_r600	= 30;
 		speed_curve_r450	= 30;
 		speed_curve_straight	= 30;
-		
-		speed_crossline		= 30;
-		speed_ckank_trace	= 30;
-		speed_rightclank_curve	= 22;
-		speed_rightclank_escape	= 30;
-		speed_leftclank_curve	= 22;
-		speed_leftclank_escape	= 30;
-		
-		speed_halfine		= 30;
-		speed_rightchange_trace = 30;
-		speed_rightchange_curve	= 30;
-		speed_rightchange_escape= 30;
-		speed_leftchange_trace 	= 30;
-		speed_leftchange_curve	= 30;
-		speed_leftchange_escape	= 30;
-		
-		speed_slope_brake	= 20;
-		speed_slope_trace	= 30;
 		
 		fixSpeed = 1;
 		ret = 1;
