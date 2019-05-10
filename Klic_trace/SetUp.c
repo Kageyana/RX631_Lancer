@@ -121,8 +121,8 @@ void setup( void )
 		case 0x3:
 			data_tuning ( &pattern_parameter, 1, LEFT );
 			
-			if ( pattern_parameter == 8 ) pattern_parameter = 1;
-			else if ( pattern_parameter == 0 ) pattern_parameter = 7;
+			if ( pattern_parameter == 10 ) pattern_parameter = 1;
+			else if ( pattern_parameter == 0 ) pattern_parameter = 9;
 			
 			switch( pattern_parameter ) {
 				case 1:
@@ -189,6 +189,26 @@ void setup( void )
 					lcdPrintf("  %4dmm", enc_aftercurve );
 					
 					data_tuning ( &enc_aftercurve, 1, RIGHT );
+					break;
+					
+				case 8:
+					// S字カーブ直線速度
+					lcdPosition( 0, 0 );
+					lcdPrintf("CURVE_BE");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %4dmm", enc_subbreakF );
+					
+					data_tuning ( &enc_subbreakF, 1, RIGHT );
+					break;
+					
+				case 9:
+					// S字カーブ直線速度
+					lcdPosition( 0, 0 );
+					lcdPrintf("CURVE_AF");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %4dmm", enc_subbreakD );
+					
+					data_tuning ( &enc_subbreakD, 1, RIGHT );
 					break;
 			}
 			break;

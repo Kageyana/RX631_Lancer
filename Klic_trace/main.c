@@ -264,6 +264,22 @@ void main(void){
 				break;
 			}
 			/*
+			if ( targetmarker == 0xf  ) {
+				if ( enc1 >= enc_mm(3400) - enc_mm( enc_subbreakF ) ) {
+					enc1 = 0;
+					setBeepPatternS( 0x8000 );
+					pattern = 12;
+					break;
+				}
+			} else if ( targetmarker == 0xd ) {
+				if ( enc1 >= enc_mm(1400) - enc_mm( enc_subbreakD ) ) {
+					enc1 = 0;
+					setBeepPatternS( 0x8000 );
+					pattern = 12;
+					break;
+				}
+				*/
+	/*
 			// カーブチェック
 			if ( i >=  CURVE_R600_START || i <= -CURVE_R600_START ) {
 				enc1 = 0;
@@ -350,7 +366,7 @@ void main(void){
 				}
 				
 				enc1 = 0;
-				pattern = 31;
+				pattern = 11;
 				break;
 			}
 			break;
@@ -377,76 +393,11 @@ void main(void){
 				}
 				
 				enc1 = 0;
-				pattern = 41;
+				pattern = 11;
 				break;
 			}
 			break;
 			
-		//-------------------------------------------------------------------
-		// 【030】右的
-		//-------------------------------------------------------------------
-		case 31:
-			//targettheta();
-			if ( targetmarker == 0xe ) {
-				SetAngle2 = 517;
-			} else if ( targetmarker == 0xf ) {
-				SetAngle2 = 596;
-			} else {
-				SetAngle2 = 398;
-			}
-			servoPwmOut( ServoPwm );
-			//servoPwmOut2( ServoPwm3 );
-			targetSpeed = speed_straight * SPEED_CURRENT;
-			diff( motorPwm );
-			// 500mm進む
-			if ( enc1 > enc_mm( 600 ) ) {
-				enc1 = 0;
-				pattern = 32;
-				break;
-			}
-			break;
-			
-		case 32:
-				SetAngle2 = 0;
-				//servoPwmOut2( ServoPwm3 );
-				servoPwmOut( ServoPwm );
-				targetSpeed = speed_straight * SPEED_CURRENT;
-				diff( motorPwm );
-				if ( enc1 > enc_mm( 200 ) ) {
-					enc1 = 0;
-					pattern = 11;
-					break;
-				}
-				break;
-		//-------------------------------------------------------------------
-		// 【040】左的
-		//-------------------------------------------------------------------
-		case 41:
-			SetAngle2 = -398;
-			servoPwmOut( ServoPwm );
-			//servoPwmOut2( ServoPwm3 );
-			targetSpeed = speed_straight * SPEED_CURRENT;
-			diff( motorPwm );
-			// 500mm進む
-			if ( enc1 > enc_mm( 600 ) ) {
-				enc1 = 0;
-				pattern = 32;
-				break;
-			}
-			break;
-			
-		case 42:
-				SetAngle2 = 0;
-				//servoPwmOut2( ServoPwm3 );
-				servoPwmOut( ServoPwm );
-				targetSpeed = speed_straight * SPEED_CURRENT;
-				diff( motorPwm );
-				if ( enc1 > enc_mm( 200 ) ) {
-					enc1 = 0;
-					pattern = 11;
-					break;
-				}
-				break;
 		//-------------------------------------------------------------------
 		//【100】停止処理
 		//-------------------------------------------------------------------

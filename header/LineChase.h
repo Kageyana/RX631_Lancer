@@ -22,6 +22,8 @@
 
 #define ENC_BEFORECURVE 		600	// カーブ前の減速区間
 #define ENC_AFTERCURVE 		600	// カーブ後の安定区間
+#define ENC_SUBBREAKF	 		200	// カーブ前予備減速区間
+#define ENC_SUBBREAKD	 		200	// カーブ前予備減速区間
 
 // カーブ関連
 #define CURVE_R600_START	20		// R600開始AD値
@@ -101,6 +103,8 @@ extern short	speed_curve_straight;	// S字カーブ直線速度
 
 extern short 	enc_buforecurve;		// カーブ前の減速区間
 extern short	enc_aftercurve;			// カーブ後の安定区間
+extern short	enc_subbreakF;			// 予備原減速区間
+extern short	enc_subbreakD;			// 予備原減速区間
 
 // サーボ角度
 extern short	angle_rightclank;		// 右クランク旋回角度

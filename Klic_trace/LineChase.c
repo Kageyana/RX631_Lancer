@@ -27,6 +27,8 @@ short	speed_curve_straight;	// S字カーブ直線速度
 
 short enc_buforecurve;		// カーブ前の減速区間
 short enc_aftercurve;			// カーブ後の安定区間
+short	enc_subbreakF;			// 予備原減速区間
+short	enc_subbreakD;			// 予備原減速区間
 
 // タイマ関連
 short			cnt_gyro;			// 角度計算用カウンタ
@@ -624,9 +626,9 @@ void diff ( signed char pwm )
 				motor_r( R4, R2 );
 			}
 		} else {
-			r1 = rev_difference_B[ pa_number ];
-			r2 = rev_difference_B[ pa_number + 1 ];
-			r3 = rev_difference_B[ pa_number + 2 ];
+			r1 = rev_difference_D[ pa_number ];
+			r2 = rev_difference_D[ pa_number + 1 ];
+			r3 = rev_difference_D[ pa_number + 2 ];
 			
 			R1 = r1 * pwm / 100;
 			R2 = r2 * pwm / 100;
