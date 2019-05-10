@@ -979,14 +979,14 @@ void sendLog (void) {
 		send_Char			(	motorPwm 	);
 		send_Char			(	sensor_inp() 	);
 		send_Char			( 	slope_mode	);
-		send_Char			(	(char)Encoder		);
+		send_Char			(	( char)Encoder		);
 		send_Char			(	sPwm	);
 		send_Char			(	sPwm2	);
 		send_Char			(	(char)RollAngleIMU*10	);
 		
 		send_ShortToChar	(	(short)TurningAngleIMU*10	);
-		send_ShortToChar	(	getServoAngle2()		);
-		send_ShortToChar	(	SetAngle2		);
+		send_ShortToChar	(	getServoAngle()		);
+		send_ShortToChar	(	SetAngle		);
 		send_ShortToChar	(	rawZg		);
 		send_ShortToChar	(	getServoAngle()	);
 		send_ShortToChar	(	SetAngle		);
@@ -1029,7 +1029,7 @@ void msd_sendToPC ( void )
 			case 1:
 				i = 0;
 				// タイトル
-				/*printf(	"Time[ms],"		);
+				printf(	"Time[ms],"		);
 				printf(	"pattern,"			);
 				printf(	"MotorPwm,"		);
 				printf(	"sensor_inp(),"		);
@@ -1050,7 +1050,7 @@ void msd_sendToPC ( void )
 				printf(	"EncoderTotal,"		);
 				printf(	"enc1,"			);
 				printf(	"cnt_log[ms]"		);
-				printf("\n");*/
+				printf("\n");
 				
 				msdEndaddress = msdWorkaddress2;	// 読み込み終了アドレス
 				msdWorkaddress = msdWorkaddress;	// 読み込み開始アドレス
@@ -1090,7 +1090,7 @@ void msd_sendToPC ( void )
 				printf("%5d,", msdBuff[ msdBuffaddress + 1 ]);	// motorPwm
 				printf("%5d,", msdBuff[ msdBuffaddress + 2 ]);	// sensor_inp()
 				printf("%5d,", msdBuff[ msdBuffaddress + 3 ]);	// slope_mode
-				printf("%5d,", msdBuff[ msdBuffaddress + 4 ]);	// Encoder
+				printf("%5d,", (char)msdBuff[ msdBuffaddress + 4 ]);	// Encoder
 				printf("%5d,", msdBuff[ msdBuffaddress + 5 ]);	// sPwm
 				printf("%5d,", msdBuff[ msdBuffaddress + 6 ]);	// sPwm2
 				printf("%5d,", msdBuff[ msdBuffaddress + 7 ]/10);	// RollAngleIMU

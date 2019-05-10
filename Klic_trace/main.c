@@ -58,6 +58,7 @@ void main(void){
 	//=================================//
 	inti_lcd();			// LCD初期化
 	
+	motor_f( 0, 0 );
 	motor_r( 0, 0 );
 	servoPwmOut( 0 );
 	//servoPwmOut2( 0 );
@@ -256,6 +257,12 @@ void main(void){
 				pattern = 22;
 				break;
 			}
+			if ( check_crossline() ) {
+				enc1 = 0;
+				setBeepPatternS( 0x8000 );
+				pattern = 12;
+				break;
+			}
 			/*
 			// カーブチェック
 			if ( i >=  CURVE_R600_START || i <= -CURVE_R600_START ) {
@@ -304,9 +311,9 @@ void main(void){
 			SetAngle2 = 0;
 			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
-			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
+			targetSpeed = speed_curve_straight * SPEED_CURRENT;
 			diff( motorPwm );
-			if( enc1 > enc_mm(200) ) {		// 600mm進む
+			if( enc1 > enc_mm(600) ) {		// 600mm進む
 				enc1 = 0;
 				pattern = 11;
 				break;
@@ -453,7 +460,7 @@ void main(void){
 			servoPwmOut( ServoPwm );
 			//servoPwmOut2( 0 );
 			targetSpeed = 0;
-			( motorPwm, motorPwm );
+			motor_f( motorPwm, motorPwm );
 			motor_r( motorPwm, motorPwm );
 			
 			if( Encoder <= 1 && Encoder >= -1 ) {
@@ -465,6 +472,7 @@ void main(void){
 			
 		case 103:
 			servoPwmOut( 0 );
+			motor_f( 0, 0 );
 			motor_r( 0, 0 );
 			
 			if( msdset == 1 ) {
