@@ -661,6 +661,7 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 			enc_aftercurve  		= flashDataBuff[ 6 ];
 			enc_subbreakF 		= flashDataBuff[ 7 ];
 			enc_subbreakD 		= flashDataBuff[ 8 ];
+			speed_curve_brake2  = flashDataBuff[ 9 ];
 		
 		} else if ( checkBlank( ( PARAMETER_STARTAREA *32 ) + FLASHSTARTADDR ) <= 0 ) {
 			// 全ブロックイレーズまたはエラーが発生したら初期値に設定する
@@ -674,6 +675,7 @@ void readFlashSetup ( bool speed, bool C_angle, bool msd, bool pid_line, bool pi
 			enc_aftercurve  		= ENC_AFTERCURVE;
 			enc_subbreakF 		= ENC_SUBBREAKF;
 			enc_subbreakD 		= ENC_SUBBREAKD;
+			speed_curve_brake2  = SPEED_CURVE_BRAKE2;
 			
 			printf("Parameter Initialize\n");
 		}
@@ -849,6 +851,7 @@ void writeFlashBeforeStart ( bool speed, bool C_angle, bool pid_line, bool pid_a
 		flashDataBuff[ 6 ] = enc_aftercurve;
 		flashDataBuff[ 7 ] = enc_subbreakF;
 		flashDataBuff[ 8 ] = enc_subbreakD;
+		flashDataBuff[ 9 ] = speed_curve_brake2;
 		
 		writeFlashData( PARAMETER_STARTAREA, PARAMETER_ENDAREA, PARAMETER_AREA, NUMDATA );
 	}

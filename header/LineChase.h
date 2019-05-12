@@ -15,7 +15,8 @@
 
 // 各セクションでの目標速度　x/10[m/s]
 #define SPEED_STRAIGHT			54	// 通常トレース
-#define SPEED_CURVE_BRAKE		20	// カーブブレーキ
+#define SPEED_CURVE_BRAKE		30	// カーブブレーキ
+#define SPEED_CURVE_BRAKE2		20	// カーブブレーキ
 #define SPEED_CURVE_R600		38	// R600カーブ速度
 #define SPEED_CURVE_R450		34	// R450カーブ速度
 #define SPEED_CURVE_STRAIGHT	44	// S字カーブ直線速度
@@ -97,6 +98,7 @@ extern short	stopping_meter;			// 停止距離
 // 速度
 extern short	speed_straight;			// 通常トレース
 extern short	speed_curve_brake;		// カーブブレーキ
+extern short	speed_curve_brake2;		// カーブブレーキ
 extern short	speed_curve_r600;		// R600カーブ速度
 extern short	speed_curve_r450;		// R450カーブ速度
 extern short	speed_curve_straight;	// S字カーブ直線速度

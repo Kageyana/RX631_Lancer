@@ -989,7 +989,7 @@ void sendLog (void) {
 		send_ShortToChar	(	SetAngle		);
 		send_ShortToChar	(	rawZg		);
 		send_ShortToChar	(	getServoAngle()	);
-		send_ShortToChar	(	SetAngle		);
+		send_ShortToChar	(	(short)targetSpeed	);
 		send_ShortToChar	(	getAnalogSensor()	);
 		
 		send_uIntToChar 	(	EncoderTotal	);
@@ -1044,7 +1044,7 @@ void msd_sendToPC ( void )
 				printf(	"SetAngle2,"	);
 				printf(	"zg[degrees/sec],"	);
 				printf(	"getServoAngle,"	);
-				printf(	"SetAngle,"		);
+				printf(	"targetSpeed,"		);
 				printf(	"getAnalogSensor,"	);
 				
 				printf(	"EncoderTotal,"		);
@@ -1096,8 +1096,8 @@ void msd_sendToPC ( void )
 				printf("%5d,", msdBuff[ msdBuffaddress + 7 ]/10);	// RollAngleIMU
 				
 				printf("%4.2f,", (double)CharToShort(8)/10);	// TurningAngleIMU
-				printf("%5d,", CharToShort(10));// getServoAngle2
-				printf("%5d,", CharToShort(12));// SetAngle2
+				printf("%5d,", CharToShort(10));// getServoAngle
+				printf("%5d,", CharToShort(12));// targetSpeed
 				printf("%4.4f,", (double)CharToShort(14) / GYROLSB);// zg
 				printf("%5d,", CharToShort(16));				// getServoAngle()
 				printf("%5d,", CharToShort(18));				// SetAngle

@@ -139,7 +139,7 @@ void main(void){
 				lcdPosition( 0, 0 );
 				lcdPrintf("mark %x  ", targetmarker);
 				lcdPosition( 0, 1 );
-				lcdPrintf("    %4d",SetAngle2);
+				lcdPrintf("    %d",pattern);
 			}
 			// スイッチで停止
 			if ( tasw_get() == 0x4 ) {
@@ -257,75 +257,118 @@ void main(void){
 				pattern = 22;
 				break;
 			}
+			/*
 			if ( check_crossline() ) {
 				enc1 = 0;
 				setBeepPatternS( 0x8000 );
 				pattern = 12;
 				break;
 			}
-			/*
+			*/
 			if ( targetmarker == 0xf  ) {
-				if ( enc1 >= enc_mm(3400) - enc_mm( enc_subbreakF ) ) {
+				if ( enc1 >= enc_mm(3600-120) - enc_mm( enc_subbreakF ) ) {
 					enc1 = 0;
 					setBeepPatternS( 0x8000 );
 					pattern = 12;
 					break;
 				}
 			} else if ( targetmarker == 0xd ) {
-				if ( enc1 >= enc_mm(1400) - enc_mm( enc_subbreakD ) ) {
+				if ( enc1 >= enc_mm(800-120) - enc_mm( enc_subbreakD ) ) {
 					enc1 = 0;
 					setBeepPatternS( 0x8000 );
 					pattern = 12;
 					break;
 				}
-				*/
+			}
+				
 	/*
 			// カーブチェック
 			if ( i >=  CURVE_R600_START || i <= -CURVE_R600_START ) {
 				enc1 = 0;
 				curve_moed = 1;
-				pattern = 12;
+				pattern = 13;
 				break;
-			}*/
+			}
+			*/
 			break;
 			
 		case 12:
 			// カーブブレーキ
-			SetAngle2 = 0;
-			//servoPwmOut2( ServoPwm3 );
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_brake * SPEED_CURRENT;
 			led_out( 0x1e );
 			diff( motorPwm );
 			
+			if ( check_crossline() ) {
+				enc1 = 0;
+				setBeepPatternS( 0x8000 );
+				pattern = 13;
+				break;
+			}
+			/*
 			if( enc1 > enc_mm(enc_buforecurve) ) {		// 600mm進む
 				enc1 = 0;
 				pattern = 13;
 				break;
 			}
+			*/
 			break;
 			
 		case 13:
-			// R600カーブ走行
-			SetAngle2 = 0;
-			//servoPwmOut2( ServoPwm3 );
+			// カーブブレーキ
 			servoPwmOut( ServoPwm );
-			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
+			targetSpeed = speed_curve_brake2 * SPEED_CURRENT;
+			led_out( 0x1e );
 			diff( motorPwm );
-			i = getServoAngle();
 			
-			//直線チェック
-			if( i <  CURVE_R600_START && i > -CURVE_R600_START ) {
+			if ( enc1 > enc_mm(enc_buforecurve) ) {
 				enc1 = 0;
-				curve_moed = 0;
+				setBeepPatternS( 0x8000 );
 				pattern = 14;
 				break;
 			}
 			break;
 			
 		case 14:
-			SetAngle2 = 0;
-			//servoPwmOut2( ServoPwm3 );
+			// R600カーブ走行
+			servoPwmOut( ServoPwm );
+			targetSpeed = speed_curve_r600 * SPEED_CURRENT;
+			diff( motorPwm );
+			i = getServoAngle();
+			
+			//直線チェック
+			if (curve_moed) {
+				if( i <  CURVE_R600_START && i > -CURVE_R600_START ) {
+					enc1 = 0;
+					curve_moed = 0;
+					pattern = 16;
+					break;
+				}
+			}
+			// R450チェック
+			if( i >= CURVE_R450_START || i <= -CURVE_R450_START ) {
+				enc1 = 0;
+				pattern = 15;
+				break;
+			}
+			break;
+			
+		case 15:
+			// R450カーブ走行
+			servoPwmOut( ServoPwm );
+			targetSpeed = speed_curve_r450 * SPEED_CURRENT;
+			diff( motorPwm );
+			i = getServoAngle();
+			// R600チェック
+			if( i < CURVE_R450_START && i > -CURVE_R450_START ) {
+				enc1 = 0;
+				curve_moed = 1;
+				pattern = 14;
+				break;
+			}
+			break;
+			
+		case 16:
 			servoPwmOut( ServoPwm );
 			targetSpeed = speed_curve_straight * SPEED_CURRENT;
 			diff( motorPwm );
@@ -352,7 +395,7 @@ void main(void){
 				pattern = 12;
 				break;
 			}
-			if ( enc1 >= enc_mm( 60 ) ) {
+			if ( enc1 >= enc_mm( 120 ) ) {
 				if ( targetmarker == 0xe ) {
 					targetmarker = 0xf;
 				} else if ( targetmarker == 0xf ) {
@@ -385,7 +428,7 @@ void main(void){
 				pattern = 12;
 				break;
 			}
-			if ( enc1 >= enc_mm( 60 ) ) {
+			if ( enc1 >= enc_mm( 120 ) ) {
 				if ( targetmarker == 0xa ) {
 					targetmarker = 0xb;
 				} else if ( targetmarker == 0xc ) {

@@ -121,8 +121,8 @@ void setup( void )
 		case 0x3:
 			data_tuning ( &pattern_parameter, 1, LEFT );
 			
-			if ( pattern_parameter == 10 ) pattern_parameter = 1;
-			else if ( pattern_parameter == 0 ) pattern_parameter = 9;
+			if ( pattern_parameter == 11 ) pattern_parameter = 1;
+			else if ( pattern_parameter == 0 ) pattern_parameter = 10;
 			
 			switch( pattern_parameter ) {
 				case 1:
@@ -139,11 +139,20 @@ void setup( void )
 					lcdPosition( 0, 0 );
 					lcdPrintf("BRAKE   ");
 					lcdPosition( 0, 1 );
-					lcdPrintf("  %3gm/s", (double)speed_curve_brake / 10 );
+					lcdPrintf("  %3gm/s", (double)speed_curve_brake/ 10 );
 					
 					data_tuning ( &speed_curve_brake, 1, RIGHT );
 					break;
 				case 3:
+					// カーブブレーキ
+					lcdPosition( 0, 0 );
+					lcdPrintf("BRAKE2  ");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %3gm/s", (double)speed_curve_brake2 / 10 );
+					
+					data_tuning ( &speed_curve_brake2, 1, RIGHT );
+					break;
+				case 4:
 					// R600カーブ走行速度
 					lcdPosition( 0, 0 );
 					lcdPrintf("R600    ");
@@ -152,7 +161,7 @@ void setup( void )
 					
 					data_tuning ( &speed_curve_r600, 1, RIGHT );
 					break;
-				case 4:
+				case 5:
 					// R450カーブ走行速度
 					lcdPosition( 0, 0 );
 					lcdPrintf("R450    ");
@@ -161,7 +170,7 @@ void setup( void )
 					
 					data_tuning ( &speed_curve_r450, 1, RIGHT );
 					break;
-				case 5:
+				case 6:
 					// S字カーブ直線速度
 					lcdPosition( 0, 0 );
 					lcdPrintf("CURVE_ST");
@@ -171,44 +180,44 @@ void setup( void )
 					data_tuning ( &speed_curve_straight, 1, RIGHT );
 					break;
 					
-				case 6:
+				case 7:
 					// S字カーブ直線速度
 					lcdPosition( 0, 0 );
 					lcdPrintf("CURVE_BE");
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %4dmm", enc_buforecurve );
 					
-					data_tuning ( &enc_buforecurve, 1, RIGHT );
+					data_tuning ( &enc_buforecurve, 10, RIGHT );
 					break;
 					
-				case 7:
+				case 8:
 					// S字カーブ直線速度
 					lcdPosition( 0, 0 );
 					lcdPrintf("CURVE_AF");
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %4dmm", enc_aftercurve );
 					
-					data_tuning ( &enc_aftercurve, 1, RIGHT );
-					break;
-					
-				case 8:
-					// S字カーブ直線速度
-					lcdPosition( 0, 0 );
-					lcdPrintf("CURVE_BE");
-					lcdPosition( 0, 1 );
-					lcdPrintf("  %4dmm", enc_subbreakF );
-					
-					data_tuning ( &enc_subbreakF, 1, RIGHT );
+					data_tuning ( &enc_aftercurve, 10, RIGHT );
 					break;
 					
 				case 9:
 					// S字カーブ直線速度
 					lcdPosition( 0, 0 );
-					lcdPrintf("CURVE_AF");
+					lcdPrintf("SBREAK_F");
+					lcdPosition( 0, 1 );
+					lcdPrintf("  %4dmm", enc_subbreakF );
+					
+					data_tuning ( &enc_subbreakF, 10, RIGHT );
+					break;
+					
+				case 10:
+					// S字カーブ直線速度
+					lcdPosition( 0, 0 );
+					lcdPrintf("SBREAK_D");
 					lcdPosition( 0, 1 );
 					lcdPrintf("  %4dmm", enc_subbreakD );
 					
-					data_tuning ( &enc_subbreakD, 1, RIGHT );
+					data_tuning ( &enc_subbreakD, 10, RIGHT );
 					break;
 			}
 			break;

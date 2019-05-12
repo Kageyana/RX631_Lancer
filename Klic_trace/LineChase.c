@@ -21,6 +21,7 @@ short	stopping_meter;			// 停止距離
 // 速度
 short	speed_straight;			// 通常トレース
 short	speed_curve_brake;		// カーブブレーキ
+short	speed_curve_brake2;		// カーブブレーキ
 short	speed_curve_r600;		// R600カーブ速度
 short	speed_curve_r450;		// R450カーブ速度
 short	speed_curve_straight;	// S字カーブ直線速度
@@ -253,7 +254,7 @@ void motorControl( void )
 	
 	// 駆動モーター用PWM値計算
 	Dev = i - j;	// 偏差
-	
+	/*
 	if ( Dev > 50 || Dev < -50) {
 		// 目標値を超えたらI成分リセット
 		if ( Dev >= 0 && AccelefBefore == 1 ) Int3 = 0;
@@ -279,8 +280,26 @@ void motorControl( void )
 		if ( Dev < 0 ) v = -v;
 		iRet = v;
 	}
-	if ( Dev > 0 )	AccelefBefore = 0;
-	else		AccelefBefore = 1;
+	*/
+	// 目標値を変更したらI成分リセット
+	if ( i != targetSpeedBefore ) Int3 = 0;
+	Int3 += (double)Dev * 0.001;		// 積分
+	if( Int3 >= 1280 ) Int3 = 1280;
+	if( Int3 <= -1280 ) Int3 = -1280;
+	Dif = Dev - EncoderBefore;		// 微分　dゲイン1/1000倍
+	
+	iP = (int)kp3 * Dev;			// 比例
+	iI = (double)ki3 * Int3;		// 積分
+	iD = (int)kd3 * Dif;			// 微分
+	iRet = iP + iI + iD;
+	iRet = iRet >> 4;
+	
+	// PWMの上限の設定
+	if ( iRet >  100 ) iRet =  100;
+	if ( iRet <  -100 ) iRet = -100;
+		
+	//if ( Dev > 0 )	AccelefBefore = 0;
+	//else		AccelefBefore = 1;
 	
 	motorPwm = iRet;
 	
